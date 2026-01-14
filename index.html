@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CeroHeal Rehab Glove System - Secure Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .login-header {
+            background: linear-gradient(to right, #0a369d, #4472ca);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo-container {
+            margin-bottom: 15px;
+        }
+        
+        .logo {
+            font-size: 48px;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .secure-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .login-form {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #555;
+        }
+        
+        .input-with-icon input {
+            width: 100%;
+            padding: 15px 15px 15px 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .input-with-icon input:focus {
+            border-color: #0a369d;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(10, 54, 157, 0.2);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            cursor: pointer;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, #0a369d, #4472ca);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .login-btn:hover {
+            background: linear-gradient(to right, #4472ca, #5e7ce2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(10, 54, 157, 0.4);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .login-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+        
+        .error-message {
+            color: #d32f2f;
+            background-color: #ffebee;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success-message {
+            color: #2e7d32;
+            background-color: #e8f5e9;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+        
+        .attempts-warning {
+            color: #f57c00;
+            background-color: #fff3e0;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @media (max-width: 500px) {
+            .login-container {
+                max-width: 100%;
+            }
+            
+            .login-header {
+                padding: 25px 15px;
+            }
+            
+            .login-form {
+                padding: 25px 20px;
+            }
+            
+            .logo-text {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="secure-badge">
+                <i class="fas fa-shield-alt"></i> Secure Login
+            </div>
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-hand-holding-medical"></i>
+                </div>
+                <h1 class="logo-text">CeroHeal</h1>
+                <p class="subtitle">Rehabilitation Glove System</p>
+            </div>
+        </div>
+        
+        <div class="login-form">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="userId">User ID</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user-md"></i>
+                        <input type="text" id="userId" placeholder="Enter your user ID" autocomplete="off" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter your password" autocomplete="off" required>
+                        <span class="password-toggle" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="error-message" id="errorMessage">
+                    <i class="fas fa-exclamation-circle"></i> Invalid credentials. Please check your User ID and Password.
+                </div>
+                
+                <div class="success-message" id="successMessage">
+                    <i class="fas fa-check-circle"></i> Login successful! Redirecting to system dashboard...
+                </div>
+                
+                <div class="attempts-warning" id="attemptsWarning">
+                    <i class="fas fa-exclamation-triangle"></i> <span id="attemptsCount">3</span> attempts remaining
+                </div>
+                
+                <button type="submit" class="login-btn" id="loginButton">
+                    <i class="fas fa-sign-in-alt"></i> Access System
+                </button>
+            </form>
+        </div>
+        
+        <div class="footer">
+            <p><i class="fas fa-lock"></i> CeroHeal Rehab Glove System &copy; 2023. Authorized access only.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const userIdInput = document.getElementById('userId');
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const attemptsWarning = document.getElementById('attemptsWarning');
+            const attemptsCount = document.getElementById('attemptsCount');
+            const loginButton = document.getElementById('loginButton');
+            const loginContainer = document.querySelector('.login-container');
+            
+            // Define the valid credentials
+            const validUserId = 'CHRGS001';
+            const validPassword = '123456';
+            
+            // Track login attempts
+            let loginAttempts = 0;
+            const maxAttempts = 3;
+            
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+            
+            // Handle form submission
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const userId = userIdInput.value.trim();
+                const password = passwordInput.value;
+                
+                // Clear previous messages
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+                
+                // Validate credentials
+                if (userId === validUserId && password === validPassword) {
+                    // Successful login
+                    successMessage.style.display = 'block';
+                    loginButton.disabled = true;
+                    loginButton.innerHTML = '<i class="fas fa-check"></i> Access Granted';
+                    loginButton.style.background = 'linear-gradient(to right, #2e7d32, #388e3c)';
+                    
+                    // Clear inputs
+                    userIdInput.value = '';
+                    passwordInput.value = '';
+                    
+                    // Simulate redirect to dashboard after 1.5 seconds
+                    setTimeout(() => {
+                        // In a real application, you would redirect to the dashboard
+                        // window.location.href = 'dashboard.html';
+                        alert('Redirecting to CeroHeal Dashboard...\n\nSystem functions would be accessible here.');
+                        loginButton.disabled = false;
+                        loginButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access System';
+                        loginButton.style.background = 'linear-gradient(to right, #0a369d, #4472ca)';
+                        successMessage.style.display = 'none';
+                        loginAttempts = 0; // Reset attempts on successful login
+                        attemptsWarning.style.display = 'none';
+                    }, 1500);
+                    
+                } else {
+                    // Failed login
+                    loginAttempts++;
+                    const remainingAttempts = maxAttempts - loginAttempts;
+                    
+                    // Show error
+                    errorMessage.style.display = 'block';
+                    
+                    // Shake animation for failed login
+                    loginContainer.classList.add('shake');
+                    setTimeout(() => {
+                        loginContainer.classList.remove('shake');
+                    }, 500);
+                    
+                    // Clear password field
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                    
+                    // Show attempts warning if applicable
+                    if (remainingAttempts > 0 && remainingAttempts < maxAttempts) {
+                        attemptsCount.textContent = remainingAttempts;
+                        attemptsWarning.style.display = 'block';
+                    }
+                    
+                    // Disable form after max attempts
+                    if (loginAttempts >= maxAttempts) {
+                        userIdInput.disabled = true;
+                        passwordInput.disabled = true;
+                        loginButton.disabled = true;
+                        loginButton.innerHTML = '<i class="fas fa-ban"></i> Access Locked';
+                        loginButton.style.background = '#cccccc';
+                        
+                        errorMessage.innerHTML = '<i class="fas fa-ban"></i> Maximum login attempts exceeded. System locked.';
+                        
+                        // Show lockout message
+                        setTimeout(() => {
+                            alert('SYSTEM LOCKED\n\nMaximum login attempts exceeded. Please contact system administrator.');
+                        }, 300);
+                    }
+                }
+            });
+            
+            // Clear error when user starts typing
+            userIdInput.addEventListener('input', function() {
+                errorMessage.style.display = 'none';
+                attemptsWarning.style.display = 'none';
+            });
+            
+            passwordInput.addEventListener('input', function() {
+                errorMessage.style.display = 'none';
+                attemptsWarning.style.display = 'none';
+            });
+            
+            // Set focus to user ID field
+            userIdInput.focus();
+        });
+    </script>
+</body>
+</html>
