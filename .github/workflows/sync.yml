@@ -2,7 +2,7 @@ name: Sync Google Drive CSV
 
 on:
   schedule:
-    - cron: '0 * * * *'   # runs every hour
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -10,18 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
-        run: pip install google-api-python-client google-auth
+      - run: pip install google-api-python-client google-auth
 
-      - name: Download CSV from Google Drive
+      - name: Create credentials.json
+        run: |
+          echo '${{ secrets.GOOGLE_CREDENTIALS }}' > credentials.json
+
+      - name: Download CSV from Drive
         run: python download_drive_csv.py
 
       - name: Commit and push
@@ -31,3 +32,4 @@ jobs:
           git add *.csv
           git commit -m "Auto sync CSV from Drive" || echo "No changes"
           git push
+
