@@ -1,0 +1,5 @@
+{
+  "name": "CeroHeal Rehab Glove System",
+  "description": "A secure rehabilitation glove monitoring system dashboard with persistent login and automated redirection logic for GitHub Pages.",
+  "requestFramePermissions": []
+}
