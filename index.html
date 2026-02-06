@@ -134,75 +134,76 @@
         .main-content {
             flex: 1;
             margin-left: 280px;
-            padding: 0;
+            padding: 40px;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            background-color: #f8fafc;
         }
         
-        .top-header {
-            padding: 25px 40px;
-            background-color: white;
-            border-bottom: 1px solid #eee;
+        .top-bar {
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
         }
         
         .page-title h1 {
             font-size: 28px;
             color: var(--primary-color);
-            margin-bottom: 0;
+            margin-bottom: 5px;
         }
 
-        /* Tab Bar Styles */
-        .tab-bar {
+        /* Tabs Interface */
+        .tabs-container {
             display: flex;
-            background-color: white;
-            padding: 0 40px;
-            border-bottom: 1px solid #eee;
-            gap: 40px;
+            gap: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 30px;
         }
 
-        .tab-item {
-            padding: 15px 5px;
-            color: #666;
+        .tab-button {
+            padding: 12px 24px;
+            font-size: 15px;
             font-weight: 600;
+            color: #64748b;
+            background: none;
+            border: none;
             cursor: pointer;
             position: relative;
-            transition: color 0.3s;
-            font-size: 15px;
-            border: none;
-            background: none;
-            outline: none;
+            transition: all 0.2s;
         }
 
-        .tab-item:hover {
+        .tab-button:hover {
             color: var(--primary-color);
         }
 
-        .tab-item.active {
+        .tab-button.active {
             color: var(--primary-color);
         }
 
-        .tab-item.active::after {
+        .tab-button.active::after {
             content: '';
             position: absolute;
-            bottom: 0;
+            bottom: -2px;
             left: 0;
             width: 100%;
             height: 3px;
             background-color: var(--primary-color);
             border-radius: 3px 3px 0 0;
         }
-        
-        /* Dashboard Body/Content */
-        .dashboard-container {
+
+        /* Content Sections */
+        .dashboard-body {
             flex: 1;
-            padding: 30px 40px;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         .tab-content {
             display: none;
-            animation: fadeIn 0.4s ease-out;
+            animation: fadeIn 0.3s ease-in-out;
         }
 
         .tab-content.active {
@@ -210,40 +211,46 @@
         }
 
         .placeholder-card {
-            background-color: white;
+            background: white;
             border-radius: var(--border-radius);
-            box-shadow: var(--card-shadow);
             padding: 60px;
+            box-shadow: var(--card-shadow);
             text-align: center;
-            border: 1px solid #eee;
+            border: 1px solid #edf2f7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
         }
 
         .placeholder-card i {
             font-size: 64px;
-            color: #ddd;
+            color: #cbd5e1;
             margin-bottom: 20px;
         }
 
-        .placeholder-card h2 {
-            color: #888;
+        .placeholder-text {
+            font-size: 42px;
+            font-weight: 800;
+            color: #e2e8f0;
+            letter-spacing: 4px;
             margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
         }
 
-        .placeholder-card p {
-            color: #aaa;
-            font-style: italic;
+        .placeholder-desc {
+            color: #94a3b8;
+            font-size: 18px;
         }
         
         /* Footer */
         .footer {
+            margin-top: 40px;
             text-align: center;
-            color: #666;
+            color: #94a3b8;
             font-size: 13px;
-            padding: 20px 40px;
-            border-top: 1px solid #eee;
-            background-color: #fcfcfc;
+            padding: 20px 0;
+            border-top: 1px solid #e2e8f0;
         }
 
         @keyframes fadeIn {
@@ -275,26 +282,19 @@
             
             .main-content {
                 margin-left: 80px;
-            }
-
-            .tab-bar {
-                gap: 20px;
-                padding: 0 20px;
-            }
-
-            .top-header {
                 padding: 20px;
             }
 
-            .dashboard-container {
-                padding: 20px;
+            .tab-button {
+                padding: 10px 15px;
+                font-size: 13px;
             }
         }
     </style>
 </head>
 <body>
     <!-- Sidebar Navigation -->
-    <div class="sidebar">
+    <nav class="sidebar">
         <div class="logo-container">
             <div class="logo">
                 <i class="fas fa-hand-holding-medical"></i>
@@ -319,52 +319,58 @@
                 <span>Logout</span>
             </button>
         </div>
-    </div>
+    </nav>
     
     <!-- Main Content -->
-    <div class="main-content">
-        <header class="top-header">
+    <main class="main-content">
+        <div class="top-bar">
             <div class="page-title">
-                <h1>CeroHeal Dashboard</h1>
+                <h1>CeroHeal Rehab Glove System</h1>
+                <p style="color: #64748b; font-size: 14px;">Welcome back, Administrator</p>
             </div>
-        </header>
+        </div>
 
-        <!-- Tab Bar -->
-        <nav class="tab-bar">
-            <button class="tab-item active" data-tab="overview">Patient Overview</button>
-            <button class="tab-item" data-tab="charts">Data Charts</button>
-            <button class="tab-item" data-tab="reports">Summary Report</button>
-        </nav>
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <button class="tab-button active" onclick="openTab(event, 'patient-overview')">
+                <i class="fas fa-id-card-alt" style="margin-right: 8px;"></i>Patient Overview
+            </button>
+            <button class="tab-button" onclick="openTab(event, 'data-charts')">
+                <i class="fas fa-chart-line" style="margin-right: 8px;"></i>Data Charts
+            </button>
+            <button class="tab-button" onclick="openTab(event, 'summary-report')">
+                <i class="fas fa-file-medical-alt" style="margin-right: 8px;"></i>Summary Report
+            </button>
+        </div>
 
-        <!-- Dashboard Content Areas -->
-        <main class="dashboard-container">
-            <!-- Patient Overview Tab -->
-            <div id="overview" class="tab-content active">
+        <div class="dashboard-body">
+            <!-- Patient Overview Section -->
+            <section id="patient-overview" class="tab-content active">
                 <div class="placeholder-card">
                     <i class="fas fa-user-injured"></i>
-                    <h2>EXAMPLE</h2>
-                    <p>Patient Overview Data will be populated here.</p>
+                    <div class="placeholder-text">EXAMPLE</div>
+                    <p class="placeholder-desc">Detailed patient profile and health metrics will be displayed here.</p>
                 </div>
-            </div>
+            </section>
 
-            <!-- Data Charts Tab -->
-            <div id="charts" class="tab-content">
+            <!-- Data Charts Section -->
+            <section id="data-charts" class="tab-content">
                 <div class="placeholder-card">
-                    <i class="fas fa-chart-line"></i>
-                    <h2>EXAMPLE</h2>
-                    <p>Glove sensory data and rehabilitation progress charts will appear here.</p>
+                    <i class="fas fa-project-diagram"></i>
+                    <div class="placeholder-text">EXAMPLE</div>
+                    <p class="placeholder-desc">Real-time glove sensor data and historical progress charts will be displayed here.</p>
                 </div>
-            </div>
+            </section>
 
-            <!-- Summary Report Tab -->
-            <div id="reports" class="tab-content">
+            <!-- Summary Report Section -->
+            <section id="summary-report" class="tab-content">
                 <div class="placeholder-card">
-                    <i class="fas fa-file-medical-alt"></i>
-                    <h2>EXAMPLE</h2>
-                    <p>Generated session summaries and progress reports will be shown here.</p>
+                    <i class="fas fa-notes-medical"></i>
+                    <div class="placeholder-text">EXAMPLE</div>
+                    <p class="placeholder-desc">Automated session summaries and rehabilitation reports will be displayed here.</p>
                 </div>
-            </div>
-        </main>
+            </section>
+        </div>
         
         <!-- Footer -->
         <footer class="footer">
@@ -373,26 +379,29 @@
                 Developed by Tristan Chew Zun Yan - FYP in Mechatronics Engineering, ViTrox College.
             </p>
         </footer>
-    </div>
+    </main>
 
     <script>
-        // Tab switching logic
-        const tabItems = document.querySelectorAll('.tab-item');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const targetTab = item.getAttribute('data-tab');
-
-                // Remove active classes
-                tabItems.forEach(i => i.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
-
-                // Add active classes
-                item.classList.add('active');
-                document.getElementById(targetTab).classList.add('active');
-            });
-        });
+        // Tab Switching Logic
+        function openTab(evt, tabName) {
+            var i, tabContent, tabButtons;
+            
+            // Get all elements with class="tab-content" and hide them
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].classList.remove("active");
+            }
+            
+            // Get all elements with class="tab-button" and remove the class "active"
+            tabButtons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
 
         // Logout logic
         document.getElementById('logoutBtn').addEventListener('click', function() {
