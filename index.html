@@ -51,6 +51,8 @@
             top: 0;
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             z-index: 100;
+            display: flex;
+            flex-direction: column;
         }
         
         .logo-container {
@@ -59,6 +61,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            margin-bottom: 20px;
         }
         
         .logo {
@@ -76,13 +79,51 @@
             opacity: 0.8;
             margin-top: 3px;
         }
+
+        /* Sidebar Navigation Menu */
+        .nav-menu {
+            flex: 1;
+            padding: 0 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item i {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
         
         .user-info {
-            position: absolute;
-            bottom: 30px;
-            left: 0;
-            width: 100%;
-            padding: 0 25px;
+            padding: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .user-avatar {
@@ -106,7 +147,7 @@
         .user-details p {
             font-size: 12px;
             opacity: 0.8;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         
         .logout-btn {
@@ -153,45 +194,6 @@
             font-size: 28px;
             color: var(--primary-color);
             margin-bottom: 5px;
-        }
-
-        /* Tabs Interface */
-        .tabs-container {
-            display: flex;
-            gap: 10px;
-            border-bottom: 2px solid #e2e8f0;
-            margin-bottom: 30px;
-        }
-
-        .tab-button {
-            padding: 12px 24px;
-            font-size: 15px;
-            font-weight: 600;
-            color: #64748b;
-            background: none;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s;
-        }
-
-        .tab-button:hover {
-            color: var(--primary-color);
-        }
-
-        .tab-button.active {
-            color: var(--primary-color);
-        }
-
-        .tab-button.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: var(--primary-color);
-            border-radius: 3px 3px 0 0;
         }
 
         /* Content Sections */
@@ -264,17 +266,21 @@
                 width: 80px;
             }
             
-            .logo-text, .logo-subtitle, .user-details, .logout-btn span {
+            .logo-text, .logo-subtitle, .user-details, .logout-btn span, .nav-item span {
                 display: none;
             }
             
+            .nav-item i {
+                margin-right: 0;
+            }
+
             .logo-container {
                 justify-content: center;
                 padding: 25px 10px;
             }
             
             .user-info {
-                padding: 0 10px;
+                padding: 15px 10px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -283,11 +289,6 @@
             .main-content {
                 margin-left: 80px;
                 padding: 20px;
-            }
-
-            .tab-button {
-                padding: 10px 15px;
-                font-size: 13px;
             }
         }
     </style>
@@ -303,6 +304,22 @@
                 <div class="logo-text">CeroHeal</div>
                 <div class="logo-subtitle">Rehab Glove System</div>
             </div>
+        </div>
+
+        <!-- Vertical Navigation Menu -->
+        <div class="nav-menu">
+            <button class="nav-item active" onclick="openSection(event, 'patient-overview')">
+                <i class="fas fa-id-card-alt"></i>
+                <span>Patient Overview</span>
+            </button>
+            <button class="nav-item" onclick="openSection(event, 'data-charts')">
+                <i class="fas fa-chart-line"></i>
+                <span>Data Charts</span>
+            </button>
+            <button class="nav-item" onclick="openSection(event, 'summary-report')">
+                <i class="fas fa-file-medical-alt"></i>
+                <span>Summary Report</span>
+            </button>
         </div>
         
         <div class="user-info">
@@ -326,21 +343,8 @@
         <div class="top-bar">
             <div class="page-title">
                 <h1>CeroHeal Rehab Glove System</h1>
-                <p style="color: #64748b; font-size: 14px;">Welcome back, Administrator</p>
+                <p id="section-subtitle" style="color: #64748b; font-size: 14px;">Patient Overview Section</p>
             </div>
-        </div>
-
-        <!-- Tabs Navigation -->
-        <div class="tabs-container">
-            <button class="tab-button active" onclick="openTab(event, 'patient-overview')">
-                <i class="fas fa-id-card-alt" style="margin-right: 8px;"></i>Patient Overview
-            </button>
-            <button class="tab-button" onclick="openTab(event, 'data-charts')">
-                <i class="fas fa-chart-line" style="margin-right: 8px;"></i>Data Charts
-            </button>
-            <button class="tab-button" onclick="openTab(event, 'summary-report')">
-                <i class="fas fa-file-medical-alt" style="margin-right: 8px;"></i>Summary Report
-            </button>
         </div>
 
         <div class="dashboard-body">
@@ -382,9 +386,9 @@
     </main>
 
     <script>
-        // Tab Switching Logic
-        function openTab(evt, tabName) {
-            var i, tabContent, tabButtons;
+        // Section Switching Logic
+        function openSection(evt, sectionId) {
+            var i, tabContent, navItems;
             
             // Get all elements with class="tab-content" and hide them
             tabContent = document.getElementsByClassName("tab-content");
@@ -392,15 +396,23 @@
                 tabContent[i].classList.remove("active");
             }
             
-            // Get all elements with class="tab-button" and remove the class "active"
-            tabButtons = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tabButtons.length; i++) {
-                tabButtons[i].classList.remove("active");
+            // Get all elements with class="nav-item" and remove the class "active"
+            navItems = document.getElementsByClassName("nav-item");
+            for (i = 0; i < navItems.length; i++) {
+                navItems[i].classList.remove("active");
             }
             
-            // Show the current tab, and add an "active" class to the button that opened the tab
-            document.getElementById(tabName).classList.add("active");
+            // Show the current section, and add an "active" class to the button that opened it
+            document.getElementById(sectionId).classList.add("active");
             evt.currentTarget.classList.add("active");
+
+            // Update subtitle for context
+            const titles = {
+                'patient-overview': 'Patient Overview Section',
+                'data-charts': 'Data Charts & Analytics',
+                'summary-report': 'Medical Summary Reports'
+            };
+            document.getElementById('section-subtitle').innerText = titles[sectionId];
         }
 
         // Logout logic
