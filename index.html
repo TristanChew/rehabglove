@@ -134,46 +134,121 @@
         .main-content {
             flex: 1;
             margin-left: 280px;
-            padding: 20px;
+            padding: 0;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            min-height: 100vh;
         }
         
-        .top-bar {
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e0e0e0;
+        .top-header {
+            padding: 25px 40px;
+            background-color: white;
+            border-bottom: 1px solid #eee;
         }
         
         .page-title h1 {
-            font-size: 32px;
+            font-size: 28px;
             color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-        
-        /* Content Placeholder to maintain interface feel */
-        .dashboard-body {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 300px;
+            margin-bottom: 0;
         }
 
-        .welcome-msg {
+        /* Tab Bar Styles */
+        .tab-bar {
+            display: flex;
+            background-color: white;
+            padding: 0 40px;
+            border-bottom: 1px solid #eee;
+            gap: 40px;
+        }
+
+        .tab-item {
+            padding: 15px 5px;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+            font-size: 15px;
+            border: none;
+            background: none;
+            outline: none;
+        }
+
+        .tab-item:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-item.active {
+            color: var(--primary-color);
+        }
+
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px 3px 0 0;
+        }
+        
+        /* Dashboard Body/Content */
+        .dashboard-container {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .placeholder-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 60px;
             text-align: center;
+            border: 1px solid #eee;
+        }
+
+        .placeholder-card i {
+            font-size: 64px;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .placeholder-card h2 {
             color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .placeholder-card p {
+            color: #aaa;
             font-style: italic;
         }
         
         /* Footer */
         .footer {
-            margin-top: auto;
             text-align: center;
             color: #666;
-            font-size: 14px;
-            padding: 30px 0;
-            border-top: 1px solid #e0e0e0;
+            font-size: 13px;
+            padding: 20px 40px;
+            border-top: 1px solid #eee;
+            background-color: #fcfcfc;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         /* Responsive Design */
@@ -200,6 +275,19 @@
             
             .main-content {
                 margin-left: 80px;
+            }
+
+            .tab-bar {
+                gap: 20px;
+                padding: 0 20px;
+            }
+
+            .top-header {
+                padding: 20px;
+            }
+
+            .dashboard-container {
+                padding: 20px;
             }
         }
     </style>
@@ -235,29 +323,78 @@
     
     <!-- Main Content -->
     <div class="main-content">
-        <div class="top-bar">
+        <header class="top-header">
             <div class="page-title">
-                <h1>CeroHeal Rehab Glove System</h1>
+                <h1>CeroHeal Dashboard</h1>
             </div>
-        </div>
+        </header>
 
-        <div class="dashboard-body">
-            <div class="welcome-msg">
-                <i class="fas fa-hand-sparkles" style="font-size: 48px; margin-bottom: 20px; display: block;"></i>
-                <p>Welcome to the secure monitoring interface.</p>
+        <!-- Tab Bar -->
+        <nav class="tab-bar">
+            <button class="tab-item active" data-tab="overview">Patient Overview</button>
+            <button class="tab-item" data-tab="charts">Data Charts</button>
+            <button class="tab-item" data-tab="reports">Summary Report</button>
+        </nav>
+
+        <!-- Dashboard Content Areas -->
+        <main class="dashboard-container">
+            <!-- Patient Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="placeholder-card">
+                    <i class="fas fa-user-injured"></i>
+                    <h2>EXAMPLE</h2>
+                    <p>Patient Overview Data will be populated here.</p>
+                </div>
             </div>
-        </div>
+
+            <!-- Data Charts Tab -->
+            <div id="charts" class="tab-content">
+                <div class="placeholder-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h2>EXAMPLE</h2>
+                    <p>Glove sensory data and rehabilitation progress charts will appear here.</p>
+                </div>
+            </div>
+
+            <!-- Summary Report Tab -->
+            <div id="reports" class="tab-content">
+                <div class="placeholder-card">
+                    <i class="fas fa-file-medical-alt"></i>
+                    <h2>EXAMPLE</h2>
+                    <p>Generated session summaries and progress reports will be shown here.</p>
+                </div>
+            </div>
+        </main>
         
         <!-- Footer -->
-        <div class="footer">
+        <footer class="footer">
             <p>
                 CeroHeal Rehabilitation Glove System &copy; 2026. 
                 Developed by Tristan Chew Zun Yan - FYP in Mechatronics Engineering, ViTrox College.
             </p>
-        </div>
+        </footer>
     </div>
 
     <script>
+        // Tab switching logic
+        const tabItems = document.querySelectorAll('.tab-item');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetTab = item.getAttribute('data-tab');
+
+                // Remove active classes
+                tabItems.forEach(i => i.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                // Add active classes
+                item.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
+
+        // Logout logic
         document.getElementById('logoutBtn').addEventListener('click', function() {
             if (confirm('Are you sure you want to logout?')) {
                 // Clear all authentication data
