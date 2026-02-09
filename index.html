@@ -228,37 +228,98 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 450px;
+            min-height: 400px;
         }
 
         .card-header {
-            padding: 20px 25px;
+            padding: 15px 20px;
             background-color: #fcfdfe;
             border-bottom: 1px solid #edf2f7;
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: space-between;
+        }
+
+        .card-header .title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .card-header i {
-            font-size: 20px;
+            font-size: 18px;
             color: var(--secondary-color);
         }
 
         .card-header h3 {
-            font-size: 18px;
+            font-size: 16px;
             color: #334155;
             font-weight: 600;
         }
 
         .card-body {
-            padding: 40px;
+            padding: 25px;
             flex: 1;
+        }
+
+        /* Stats Styling */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .stat-item {
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-bg);
+        }
+
+        .stat-unit {
+            font-size: 12px;
+            font-weight: 400;
+            color: #94a3b8;
+            margin-left: 3px;
+        }
+
+        .progress-bar-container {
+            margin-top: 10px;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .loading-overlay {
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
+            height: 100px;
+            color: #64748b;
+            gap: 10px;
         }
 
         .placeholder-card {
@@ -398,6 +459,9 @@
                 <h1>CeroHeal Rehab Glove System</h1>
                 <p id="section-subtitle" style="color: #64748b; font-size: 14px;">Patient Overview Section</p>
             </div>
+            <div id="sync-status" style="font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 5px;">
+                <i class="fas fa-sync-alt"></i> <span>Data Synced Today</span>
+            </div>
         </div>
 
         <div class="dashboard-body">
@@ -407,23 +471,32 @@
                     <!-- Daily Section -->
                     <div class="data-card">
                         <div class="card-header">
-                            <i class="fas fa-calendar-day"></i>
-                            <h3>Daily Statistics</h3>
+                            <div class="title-group">
+                                <i class="fas fa-calendar-day"></i>
+                                <h3>Daily Statistics</h3>
+                            </div>
+                            <span id="daily-time" style="font-size: 12px; color: #94a3b8;">--:--</span>
                         </div>
-                        <div class="card-body">
-                            <div class="placeholder-text">EXAMPLE</div>
-                            <p class="placeholder-desc">Real-time daily activity tracking and session logs will be populated here.</p>
+                        <div class="card-body" id="daily-body">
+                            <div class="loading-overlay">
+                                <i class="fas fa-spinner fa-spin"></i> Loading daily data...
+                            </div>
+                            <!-- Populated via JS -->
                         </div>
                     </div>
                     <!-- Weekly Section -->
                     <div class="data-card">
                         <div class="card-header">
-                            <i class="fas fa-calendar-week"></i>
-                            <h3>Weekly Performance</h3>
+                            <div class="title-group">
+                                <i class="fas fa-calendar-week"></i>
+                                <h3>Weekly Performance</h3>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="placeholder-text">EXAMPLE</div>
-                            <p class="placeholder-desc">Aggregated weekly performance trends and comparative metrics will be displayed here.</p>
+                        <div class="card-body" id="weekly-body">
+                            <div class="loading-overlay">
+                                <i class="fas fa-spinner fa-spin"></i> Analyzing weekly trends...
+                            </div>
+                            <!-- Populated via JS -->
                         </div>
                     </div>
                 </div>
@@ -458,27 +531,81 @@
     </main>
 
     <script>
+        /**
+         * Data Service to handle CSV fetching and internal storage
+         */
+        const CeroDataStore = {
+            today: [],
+            weekly: [],
+            lastFetched: null,
+
+            async fetchTodayData() {
+                const now = new Date();
+                const yyyy = now.getFullYear();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const dd = String(now.getDate()).padStart(2, '0');
+                const fileName = `${yyyy}${mm}${dd}_DATA.csv`;
+                
+                try {
+                    // Fetching from the relative DATA folder
+                    const response = await fetch(`./DATA/${fileName}`);
+                    if (!response.ok) throw new Error('File not found');
+                    
+                    const csvText = await response.text();
+                    this.today = this.parseCSV(csvText);
+                    this.lastFetched = new Date();
+                    return this.today;
+                } catch (e) {
+                    console.warn(`Could not fetch data for ${fileName}:`, e.message);
+                    // Mock some data if in development environment or file missing
+                    return null;
+                }
+            },
+
+            parseCSV(text) {
+                const lines = text.trim().split('\n');
+                // Skip header if it exists (check if first line starts with 'time')
+                const startIdx = lines[0].toLowerCase().startsWith('time') ? 1 : 0;
+                
+                return lines.slice(startIdx).map(line => {
+                    const cols = line.split(',').map(c => c.trim());
+                    return {
+                        time: cols[0],
+                        mode: cols[1],
+                        count: this.num(cols[2]),
+                        duration: this.num(cols[3]),
+                        leftpk: this.num(cols[4]),
+                        rightpk: this.num(cols[5]),
+                        leftavg: this.num(cols[6]),
+                        rightavg: this.num(cols[7]),
+                        recindex: this.num(cols[8]),
+                        recimprove: cols[9], // keep as string to preserve +/-
+                        predtmr: this.num(cols[10]),
+                        predweek: this.num(cols[11])
+                    };
+                });
+            },
+
+            num(val) {
+                if (!val || val.toUpperCase() === 'N/A') return 0;
+                return parseFloat(val);
+            }
+        };
+
         // Section Switching Logic
         function openSection(evt, sectionId) {
             var i, tabContent, navItems;
-            
-            // Get all elements with class="tab-content" and hide them
             tabContent = document.getElementsByClassName("tab-content");
             for (i = 0; i < tabContent.length; i++) {
                 tabContent[i].classList.remove("active");
             }
-            
-            // Get all elements with class="nav-item" and remove the class "active"
             navItems = document.getElementsByClassName("nav-item");
             for (i = 0; i < navItems.length; i++) {
                 navItems[i].classList.remove("active");
             }
-            
-            // Show the current section, and add an "active" class to the button that opened it
             document.getElementById(sectionId).classList.add("active");
             evt.currentTarget.classList.add("active");
 
-            // Update subtitle for context
             const titles = {
                 'patient-overview': 'Patient Overview Section',
                 'data-charts': 'Data Charts & Analytics',
@@ -487,15 +614,117 @@
             document.getElementById('section-subtitle').innerText = titles[sectionId];
         }
 
+        // UI Update Logic
+        function updateDashboardUI(data) {
+            const dailyBody = document.getElementById('daily-body');
+            const weeklyBody = document.getElementById('weekly-body');
+            const dailyTime = document.getElementById('daily-time');
+
+            if (!data || data.length === 0) {
+                const emptyHtml = `
+                    <div class="placeholder-card" style="min-height: auto; padding: 40px; box-shadow: none;">
+                        <i class="fas fa-folder-open" style="font-size: 32px;"></i>
+                        <p style="color: #94a3b8;">No data records found for today.</p>
+                    </div>
+                `;
+                dailyBody.innerHTML = emptyHtml;
+                weeklyBody.innerHTML = emptyHtml;
+                return;
+            }
+
+            // Get latest session (last row)
+            const latest = data[data.length - 1];
+            dailyTime.innerText = `Last update: ${latest.time}`;
+
+            // Populate Daily
+            dailyBody.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Rehab Mode</span>
+                        <span class="stat-value" style="color: var(--primary-color); text-transform: capitalize;">${latest.mode}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Count</span>
+                        <span class="stat-value">${latest.count}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Duration</span>
+                        <span class="stat-value">${latest.duration}<span class="stat-unit">mins</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Recovery Index</span>
+                        <span class="stat-value">${latest.recindex}%</span>
+                        <div style="font-size: 11px; color: ${latest.recimprove.includes('+') ? 'var(--success-color)' : 'var(--danger-color)'}; font-weight: 600;">
+                            ${latest.recimprove} from last
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 25px;">
+                    <span class="stat-label">Peak Force Comparison (Left vs Right)</span>
+                    <div style="display: flex; gap: 10px; align-items: flex-end; height: 60px; padding-top: 10px;">
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 100%; background: #e2e8f0; height: 100%; border-radius: 4px; position: relative; overflow: hidden;">
+                                <div style="position: absolute; bottom: 0; width: 100%; background: var(--secondary-color); height: ${Math.min(latest.leftpk * 2, 100)}%;"></div>
+                            </div>
+                            <span style="font-size: 10px; margin-top: 4px; font-weight: 600;">L: ${latest.leftpk}</span>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 100%; background: #e2e8f0; height: 100%; border-radius: 4px; position: relative; overflow: hidden;">
+                                <div style="position: absolute; bottom: 0; width: 100%; background: var(--accent-color); height: ${Math.min(latest.rightpk * 2, 100)}%;"></div>
+                            </div>
+                            <span style="font-size: 10px; margin-top: 4px; font-weight: 600;">R: ${latest.rightpk}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Populate Weekly (using today's data as a baseline since actual multi-file fetching requires more setup)
+            weeklyBody.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-item" style="grid-column: span 2;">
+                        <span class="stat-label">Avg. Recovery Index</span>
+                        <span class="stat-value">${(data.reduce((acc, curr) => acc + curr.recindex, 0) / data.length).toFixed(1)}%</span>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: ${latest.recindex}%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Tomorrow's Goal</span>
+                        <span class="stat-value">${latest.predtmr}%</span>
+                        <span class="stat-unit">Target</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Weekly Projection</span>
+                        <span class="stat-value" style="color: var(--success-color);">${latest.predweek}%</span>
+                        <span class="stat-unit">Target</span>
+                    </div>
+                </div>
+                <div style="margin-top: 25px; padding: 15px; background: #f0f4ff; border-radius: 8px; border: 1px dashed var(--accent-color);">
+                    <p style="font-size: 13px; color: var(--primary-color); line-height: 1.4;">
+                        <i class="fas fa-lightbulb" style="margin-right: 5px;"></i>
+                        <strong>Insight:</strong> Patient is showing ${latest.recimprove.includes('+') ? 'steady improvement' : 'stable condition'} in <b>${latest.mode}</b> mode.
+                    </p>
+                </div>
+            `;
+        }
+
+        // Initialize Data Sync
+        async function initDataSync() {
+            const data = await CeroDataStore.fetchTodayData();
+            updateDashboardUI(data);
+        }
+
         // Logout logic
         document.getElementById('logoutBtn').addEventListener('click', function() {
             if (confirm('Are you sure you want to logout?')) {
-                // Clear all authentication data
                 localStorage.removeItem('isLoggedIn');
                 sessionStorage.removeItem('isLoggedIn');
                 window.location.href = 'login.html';
             }
         });
+
+        // Start sync on load
+        window.addEventListener('load', initDataSync);
     </script>
 </body>
 </html>
