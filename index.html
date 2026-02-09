@@ -212,6 +212,55 @@
             display: block;
         }
 
+        /* Layout Grid for Sections */
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .data-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid #edf2f7;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 450px;
+        }
+
+        .card-header {
+            padding: 20px 25px;
+            background-color: #fcfdfe;
+            border-bottom: 1px solid #edf2f7;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-header i {
+            font-size: 20px;
+            color: var(--secondary-color);
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
         .placeholder-card {
             background: white;
             border-radius: var(--border-radius);
@@ -242,7 +291,7 @@
 
         .placeholder-desc {
             color: #94a3b8;
-            font-size: 18px;
+            font-size: 16px;
         }
         
         /* Footer */
@@ -289,6 +338,10 @@
             .main-content {
                 margin-left: 80px;
                 padding: 20px;
+            }
+
+            .section-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -350,10 +403,29 @@
         <div class="dashboard-body">
             <!-- Patient Overview Section -->
             <section id="patient-overview" class="tab-content active">
-                <div class="placeholder-card">
-                    <i class="fas fa-user-injured"></i>
-                    <div class="placeholder-text">EXAMPLE</div>
-                    <p class="placeholder-desc">Detailed patient profile and health metrics will be displayed here.</p>
+                <div class="section-grid">
+                    <!-- Daily Section -->
+                    <div class="data-card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-day"></i>
+                            <h3>Daily Statistics</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="placeholder-text">EXAMPLE</div>
+                            <p class="placeholder-desc">Real-time daily activity tracking and session logs will be populated here.</p>
+                        </div>
+                    </div>
+                    <!-- Weekly Section -->
+                    <div class="data-card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-week"></i>
+                            <h3>Weekly Performance</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="placeholder-text">EXAMPLE</div>
+                            <p class="placeholder-desc">Aggregated weekly performance trends and comparative metrics will be displayed here.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
