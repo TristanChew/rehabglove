@@ -80,7 +80,6 @@
             margin-top: 3px;
         }
 
-        /* Sidebar Navigation Menu */
         .nav-menu {
             flex: 1;
             padding: 0 15px;
@@ -196,7 +195,6 @@
             margin-bottom: 5px;
         }
 
-        /* Content Sections */
         .dashboard-body {
             flex: 1;
             display: flex;
@@ -212,6 +210,35 @@
             display: block;
         }
 
+        /* Overview Control Styles */
+        .overview-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid #edf2f7;
+        }
+
+        .overview-selector {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background-color: white;
+            color: #334155;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .overview-selector:focus {
+            border-color: var(--primary-color);
+        }
+
         .data-card {
             background: white;
             border-radius: var(--border-radius);
@@ -220,19 +247,14 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 500px;
+            min-height: 450px;
+            margin-bottom: 25px;
         }
 
         .card-header {
             padding: 20px 25px;
             background-color: #fcfdfe;
             border-bottom: 1px solid #edf2f7;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .card-header .title-group {
             display: flex;
             align-items: center;
             gap: 15px;
@@ -250,150 +272,13 @@
         }
 
         .card-body {
-            padding: 30px;
-            flex: 1;
-        }
-
-        /* Stats Styling */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-
-        .stat-item {
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 12px;
-            border: 1px solid #f1f5f9;
-            transition: transform 0.2s;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: #64748b;
-            margin-bottom: 10px;
-            display: block;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 600;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--dark-bg);
-            display: block;
-        }
-
-        .stat-unit {
-            font-size: 14px;
-            font-weight: 400;
-            color: #94a3b8;
-            margin-left: 5px;
-        }
-
-        .stat-footer {
-            margin-top: 10px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .progress-container {
-            margin-top: 15px;
-            height: 10px;
-            background: #e2e8f0;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary-color);
-            border-radius: 5px;
-            transition: width 0.8s ease;
-        }
-
-        /* Visual Bars for Force */
-        .force-comparison {
-            margin-top: 20px;
-            background: #f8fafc;
-            padding: 25px;
-            border-radius: 12px;
-        }
-
-        .force-bars-container {
-            display: flex;
-            gap: 30px;
-            height: 150px;
-            align-items: flex-end;
-            margin-top: 20px;
-        }
-
-        .force-bar-wrapper {
+            padding: 40px;
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        .force-bar {
-            width: 100%;
-            background: #e2e8f0;
-            border-radius: 6px;
-            position: relative;
-            overflow: hidden;
-            height: 100%;
-        }
-
-        .force-fill {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            transition: height 0.6s ease;
-        }
-
-        .force-label {
-            margin-top: 10px;
-            font-size: 14px;
-            font-weight: 700;
-            color: #475569;
-        }
-
-        .loading-overlay {
-            display: flex;
-            align-items: center;
             justify-content: center;
-            height: 200px;
-            color: #94a3b8;
-            gap: 12px;
-            font-size: 16px;
-        }
-
-        .placeholder-card {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 60px;
-            box-shadow: var(--card-shadow);
             text-align: center;
-            border: 1px solid #edf2f7;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 400px;
-        }
-
-        .placeholder-card i {
-            font-size: 64px;
-            color: #cbd5e1;
-            margin-bottom: 20px;
         }
 
         .placeholder-text {
@@ -408,15 +293,27 @@
             color: #94a3b8;
             font-size: 16px;
         }
+
+        .view-content {
+            display: none;
+            width: 100%;
+        }
+
+        .view-content.active {
+            display: block;
+        }
         
-        /* Footer */
+        /* Optimized Footer Styles */
         .footer {
-            margin-top: 40px;
+            margin-top: auto;
             text-align: center;
             color: #94a3b8;
             font-size: 13px;
-            padding: 20px 0;
+            padding: 10px 0; /* Half the height */
             border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         @keyframes fadeIn {
@@ -424,36 +321,13 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Responsive Design */
         @media (max-width: 1100px) {
-            .sidebar {
-                width: 80px;
-            }
-            
-            .logo-text, .logo-subtitle, .user-details, .logout-btn span, .nav-item span {
-                display: none;
-            }
-            
-            .nav-item i {
-                margin-right: 0;
-            }
-
-            .logo-container {
-                justify-content: center;
-                padding: 25px 10px;
-            }
-            
-            .user-info {
-                padding: 15px 10px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .main-content {
-                margin-left: 80px;
-                padding: 20px;
-            }
+            .sidebar { width: 80px; }
+            .logo-text, .logo-subtitle, .user-details, .logout-btn span, .nav-item span { display: none; }
+            .nav-item i { margin-right: 0; }
+            .logo-container { justify-content: center; padding: 25px 10px; }
+            .user-info { padding: 15px 10px; flex-direction: column; align-items: center; }
+            .main-content { margin-left: 80px; padding: 20px; }
         }
     </style>
 </head>
@@ -470,15 +344,10 @@
             </div>
         </div>
 
-        <!-- Vertical Navigation Menu -->
         <div class="nav-menu">
-            <button class="nav-item active" onclick="openSection(event, 'daily-overview')">
-                <i class="fas fa-calendar-day"></i>
-                <span>Daily Overview</span>
-            </button>
-            <button class="nav-item" onclick="openSection(event, 'weekly-overview')">
-                <i class="fas fa-calendar-week"></i>
-                <span>Weekly Overview</span>
+            <button class="nav-item active" onclick="openSection(event, 'patient-overview')">
+                <i class="fas fa-id-card-alt"></i>
+                <span>Patient Overview</span>
             </button>
             <button class="nav-item" onclick="openSection(event, 'data-charts')">
                 <i class="fas fa-chart-line"></i>
@@ -510,45 +379,45 @@
     <main class="main-content">
         <div class="top-bar">
             <div class="page-title">
-                <h1 id="main-title">Daily Overview</h1>
-                <p id="section-subtitle" style="color: #64748b; font-size: 14px;">Current session diagnostics and real-time metrics.</p>
-            </div>
-            <div id="sync-status" style="font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 5px;">
-                <i class="fas fa-sync-alt"></i> <span>Data Synced Today</span>
+                <h1>CeroHeal Rehab Glove System</h1>
+                <p id="section-subtitle" style="color: #64748b; font-size: 14px;">Patient Overview Section</p>
             </div>
         </div>
 
         <div class="dashboard-body">
-            <!-- Daily Overview Section -->
-            <section id="daily-overview" class="tab-content active">
-                <div class="data-card">
-                    <div class="card-header">
-                        <div class="title-group">
-                            <i class="fas fa-clipboard-check"></i>
-                            <h3>Latest Session Statistics</h3>
+            <!-- Patient Overview Section -->
+            <section id="patient-overview" class="tab-content active">
+                <div class="overview-controls">
+                    <h2 style="font-size: 18px; color: #334155; font-weight: 600;">Data Visualization</h2>
+                    <select class="overview-selector" id="viewSelector" onchange="toggleOverview(this.value)">
+                        <option value="daily">Daily Statistics</option>
+                        <option value="weekly">Weekly Performance</option>
+                    </select>
+                </div>
+
+                <!-- Content Container -->
+                <div id="daily-view" class="view-content active">
+                    <div class="data-card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-day"></i>
+                            <h3>Daily Statistics</h3>
                         </div>
-                        <span id="daily-time-stamp" style="font-size: 13px; color: #94a3b8;">Syncing...</span>
-                    </div>
-                    <div class="card-body" id="daily-content">
-                        <div class="loading-overlay">
-                            <i class="fas fa-spinner fa-spin"></i> Initializing data stream...
+                        <div class="card-body">
+                            <div class="placeholder-text">EXAMPLE</div>
+                            <p class="placeholder-desc">Real-time daily activity tracking and session logs will be populated here.</p>
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <!-- Weekly Overview Section -->
-            <section id="weekly-overview" class="tab-content">
-                <div class="data-card">
-                    <div class="card-header">
-                        <div class="title-group">
-                            <i class="fas fa-chart-bar"></i>
-                            <h3>Historical Weekly Trends</h3>
+                <div id="weekly-view" class="view-content">
+                    <div class="data-card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-week"></i>
+                            <h3>Weekly Performance</h3>
                         </div>
-                    </div>
-                    <div class="card-body" id="weekly-content">
-                        <div class="loading-overlay">
-                            <i class="fas fa-spinner fa-spin"></i> Processing weekly analytics...
+                        <div class="card-body">
+                            <div class="placeholder-text">EXAMPLE</div>
+                            <p class="placeholder-desc">Aggregated weekly performance trends and comparative metrics will be displayed here.</p>
                         </div>
                     </div>
                 </div>
@@ -556,91 +425,40 @@
 
             <!-- Data Charts Section -->
             <section id="data-charts" class="tab-content">
-                <div class="placeholder-card">
-                    <i class="fas fa-project-diagram"></i>
-                    <div class="placeholder-text">EXAMPLE</div>
-                    <p class="placeholder-desc">Real-time glove sensor data and historical progress charts will be displayed here.</p>
+                <div class="data-card">
+                    <div class="card-header">
+                        <i class="fas fa-project-diagram"></i>
+                        <h3>Data Charts</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="placeholder-text">EXAMPLE</div>
+                        <p class="placeholder-desc">Real-time glove sensor data and historical progress charts will be displayed here.</p>
+                    </div>
                 </div>
             </section>
 
             <!-- Summary Report Section -->
             <section id="summary-report" class="tab-content">
-                <div class="placeholder-card">
-                    <i class="fas fa-notes-medical"></i>
-                    <div class="placeholder-text">EXAMPLE</div>
-                    <p class="placeholder-desc">Automated session summaries and rehabilitation reports will be displayed here.</p>
+                <div class="data-card">
+                    <div class="card-header">
+                        <i class="fas fa-file-medical-alt"></i>
+                        <h3>Summary Report</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="placeholder-text">EXAMPLE</div>
+                        <p class="placeholder-desc">Automated session summaries and rehabilitation reports will be displayed here.</p>
+                    </div>
                 </div>
             </section>
         </div>
         
-        <!-- Footer -->
+        <!-- Optimized Footer -->
         <footer class="footer">
-            <p>
-                CeroHeal Rehabilitation Glove System &copy; 2026. 
-                Developed by Tristan Chew Zun Yan - FYP in Mechatronics Engineering, ViTrox College.
-            </p>
+            CeroHeal Rehabilitation Glove System &copy; 2026. Developed by Tristan Chew Zun Yan - FYP in Mechatronics Engineering, ViTrox College.
         </footer>
     </main>
 
     <script>
-        /**
-         * Data Service to handle CSV fetching and internal storage
-         */
-        const CeroDataStore = {
-            today: [],
-            lastFetched: null,
-
-            async fetchTodayData() {
-                const now = new Date();
-                const yyyy = now.getFullYear();
-                const mm = String(now.getMonth() + 1).padStart(2, '0');
-                const dd = String(now.getDate()).padStart(2, '0');
-                const fileName = `${yyyy}${mm}${dd}_DATA.csv`;
-                
-                try {
-                    // Fetching from the relative DATA folder
-                    const response = await fetch(`./DATA/${fileName}`);
-                    if (!response.ok) throw new Error('File not found');
-                    
-                    const csvText = await response.text();
-                    this.today = this.parseCSV(csvText);
-                    this.lastFetched = new Date();
-                    return this.today;
-                } catch (e) {
-                    console.warn(`Could not fetch data for ${fileName}:`, e.message);
-                    return null;
-                }
-            },
-
-            parseCSV(text) {
-                const lines = text.trim().split('\n');
-                const startIdx = lines[0].toLowerCase().startsWith('time') ? 1 : 0;
-                
-                return lines.slice(startIdx).map(line => {
-                    const cols = line.split(',').map(c => c.trim());
-                    return {
-                        time: cols[0],
-                        mode: cols[1],
-                        count: this.num(cols[2]),
-                        duration: this.num(cols[3]),
-                        leftpk: this.num(cols[4]),
-                        rightpk: this.num(cols[5]),
-                        leftavg: this.num(cols[6]),
-                        rightavg: this.num(cols[7]),
-                        recindex: this.num(cols[8]),
-                        recimprove: cols[9],
-                        predtmr: this.num(cols[10]),
-                        predweek: this.num(cols[11])
-                    };
-                });
-            },
-
-            num(val) {
-                if (!val || val.toUpperCase() === 'N/A') return 0;
-                return parseFloat(val);
-            }
-        };
-
         // Section Switching Logic
         function openSection(evt, sectionId) {
             var i, tabContent, navItems;
@@ -656,132 +474,35 @@
             evt.currentTarget.classList.add("active");
 
             const titles = {
-                'daily-overview': { main: 'Daily Overview', sub: 'Current session diagnostics and real-time metrics.' },
-                'weekly-overview': { main: 'Weekly Overview', sub: 'Aggregated progress tracking and trend analysis.' },
-                'data-charts': { main: 'Data Charts', sub: 'Raw sensor data visualization and kinematics.' },
-                'summary-report': { main: 'Summary Reports', sub: 'Generated clinical reports and therapist notes.' }
+                'patient-overview': 'Patient Overview Section',
+                'data-charts': 'Data Charts & Analytics',
+                'summary-report': 'Medical Summary Reports'
             };
+            document.getElementById('section-subtitle').innerText = titles[sectionId];
+        }
+
+        // Overview Toggling Logic
+        function toggleOverview(view) {
+            const daily = document.getElementById('daily-view');
+            const weekly = document.getElementById('weekly-view');
             
-            document.getElementById('main-title').innerText = titles[sectionId].main;
-            document.getElementById('section-subtitle').innerText = titles[sectionId].sub;
-        }
-
-        // Dashboard Rendering Logic
-        function renderDashboard(data) {
-            const dailyContent = document.getElementById('daily-content');
-            const weeklyContent = document.getElementById('weekly-content');
-            const timeStamp = document.getElementById('daily-time-stamp');
-
-            if (!data || data.length === 0) {
-                const emptyMsg = `
-                    <div style="text-align: center; padding: 60px; color: #94a3b8;">
-                        <i class="fas fa-folder-open" style="font-size: 48px; margin-bottom: 20px;"></i>
-                        <p>No sensor logs detected for the current date.</p>
-                    </div>
-                `;
-                dailyContent.innerHTML = emptyMsg;
-                weeklyContent.innerHTML = emptyMsg;
-                timeStamp.innerText = 'No Data';
-                return;
+            if (view === 'daily') {
+                daily.classList.add('active');
+                weekly.classList.remove('active');
+            } else {
+                daily.classList.remove('active');
+                weekly.classList.add('active');
             }
-
-            const latest = data[data.length - 1];
-            timeStamp.innerText = `As of ${latest.time} Today`;
-
-            // 1. Render Daily Content
-            dailyContent.innerHTML = `
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-label">Exercise Mode</span>
-                        <span class="stat-value" style="color: var(--primary-color);">${latest.mode.toUpperCase()}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Repetitions</span>
-                        <span class="stat-value">${latest.count}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Active Time</span>
-                        <span class="stat-value">${latest.duration}<span class="stat-unit">min</span></span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Recovery Index</span>
-                        <span class="stat-value">${latest.recindex}%</span>
-                        <div class="stat-footer" style="color: ${latest.recimprove.includes('+') ? 'var(--success-color)' : 'var(--danger-color)'}">
-                            ${latest.recimprove} progress
-                        </div>
-                    </div>
-                </div>
-
-                <div class="force-comparison">
-                    <span class="stat-label">Peak Flexion Force Comparison</span>
-                    <div class="force-bars-container">
-                        <div class="force-bar-wrapper">
-                            <div class="force-bar">
-                                <div class="force-fill" style="height: ${Math.min(latest.leftpk * 3, 100)}%; background: var(--secondary-color);"></div>
-                            </div>
-                            <span class="force-label">LEFT: ${latest.leftpk} N</span>
-                        </div>
-                        <div class="force-bar-wrapper">
-                            <div class="force-bar">
-                                <div class="force-fill" style="height: ${Math.min(latest.rightpk * 3, 100)}%; background: var(--accent-color);"></div>
-                            </div>
-                            <span class="force-label">RIGHT: ${latest.rightpk} N</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // 2. Render Weekly Content
-            const avgRec = (data.reduce((sum, d) => sum + d.recindex, 0) / data.length).toFixed(1);
-            weeklyContent.innerHTML = `
-                <div class="stats-grid">
-                    <div class="stat-item" style="grid-column: span 2;">
-                        <span class="stat-label">Weekly Average Recovery</span>
-                        <span class="stat-value">${avgRec}%</span>
-                        <div class="progress-container">
-                            <div class="progress-fill" style="width: ${avgRec}%"></div>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Next Day Target</span>
-                        <span class="stat-value">${latest.predtmr}%</span>
-                        <p style="font-size: 11px; margin-top: 5px; color: #64748b;">AI-Predicted Goal</p>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Weekly Forecast</span>
-                        <span class="stat-value" style="color: var(--success-color);">${latest.predweek}%</span>
-                        <p style="font-size: 11px; margin-top: 5px; color: #64748b;">Anticipated Milestone</p>
-                    </div>
-                </div>
-
-                <div style="background: #f0f7ff; border-left: 5px solid var(--primary-color); padding: 25px; border-radius: 8px;">
-                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-brain"></i> Therapeutic Insights</h4>
-                    <p style="font-size: 14px; line-height: 1.6; color: #334155;">
-                        The patient is currently engaging in <strong>${latest.mode}</strong> therapy. 
-                        With a recovery index of ${latest.recindex}%, they are trending 
-                        <strong>${latest.recimprove.includes('+') ? 'upwards' : 'stable'}</strong> compared to previous sessions. 
-                        Peak force symmetry is at <strong>${Math.round((Math.min(latest.leftpk, latest.rightpk) / Math.max(latest.leftpk, latest.rightpk)) * 100)}%</strong>.
-                    </p>
-                </div>
-            `;
-        }
-
-        // Initialize Data Sync
-        async function initSync() {
-            const data = await CeroDataStore.fetchTodayData();
-            renderDashboard(data);
         }
 
         // Logout logic
         document.getElementById('logoutBtn').addEventListener('click', function() {
-            if (confirm('Sign out from CeroHeal Dashboard?')) {
+            if (confirm('Are you sure you want to logout?')) {
                 localStorage.removeItem('isLoggedIn');
                 sessionStorage.removeItem('isLoggedIn');
                 window.location.href = 'login.html';
             }
         });
-
-        window.addEventListener('load', initSync);
     </script>
 </body>
 </html>
