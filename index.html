@@ -186,7 +186,7 @@
             border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
         }
         
         .page-title h1 {
@@ -210,19 +210,7 @@
             display: block;
         }
 
-        /* Overview Control Styles */
-        .overview-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            background: white;
-            padding: 15px 25px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--card-shadow);
-            border: 1px solid #edf2f7;
-        }
-
+        /* Dropdown Selector Styles */
         .overview-selector {
             padding: 10px 15px;
             border-radius: 8px;
@@ -232,11 +220,13 @@
             font-weight: 600;
             outline: none;
             cursor: pointer;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .overview-selector:focus {
             border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(10, 54, 157, 0.1);
         }
 
         .data-card {
@@ -247,7 +237,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 450px;
+            min-height: 500px;
             margin-bottom: 25px;
         }
 
@@ -306,14 +296,16 @@
         /* Optimized Footer Styles */
         .footer {
             margin-top: auto;
-            text-align: center;
             color: #94a3b8;
             font-size: 13px;
-            padding: 10px 0; /* Half the height */
+            padding: 10px 0;
             border-top: 1px solid #e2e8f0;
             display: flex;
             justify-content: center;
             align-items: center;
+            text-align: center;
+            min-height: 40px;
+            width: 100%;
         }
 
         @keyframes fadeIn {
@@ -382,20 +374,17 @@
                 <h1>CeroHeal Rehab Glove System</h1>
                 <p id="section-subtitle" style="color: #64748b; font-size: 14px;">Patient Overview Section</p>
             </div>
+            <div id="top-bar-controls">
+                <select class="overview-selector" id="viewSelector" onchange="toggleOverview(this.value)">
+                    <option value="daily">Daily Statistics</option>
+                    <option value="weekly">Weekly Performance</option>
+                </select>
+            </div>
         </div>
 
         <div class="dashboard-body">
             <!-- Patient Overview Section -->
             <section id="patient-overview" class="tab-content active">
-                <div class="overview-controls">
-                    <h2 style="font-size: 18px; color: #334155; font-weight: 600;">Data Visualization</h2>
-                    <select class="overview-selector" id="viewSelector" onchange="toggleOverview(this.value)">
-                        <option value="daily">Daily Statistics</option>
-                        <option value="weekly">Weekly Performance</option>
-                    </select>
-                </div>
-
-                <!-- Content Container -->
                 <div id="daily-view" class="view-content active">
                     <div class="data-card">
                         <div class="card-header">
@@ -452,7 +441,6 @@
             </section>
         </div>
         
-        <!-- Optimized Footer -->
         <footer class="footer">
             CeroHeal Rehabilitation Glove System &copy; 2026. Developed by Tristan Chew Zun Yan - FYP in Mechatronics Engineering, ViTrox College.
         </footer>
@@ -472,6 +460,14 @@
             }
             document.getElementById(sectionId).classList.add("active");
             evt.currentTarget.classList.add("active");
+
+            // Toggle visibility of top bar controls based on section
+            const controls = document.getElementById('top-bar-controls');
+            if (sectionId === 'patient-overview') {
+                controls.style.display = 'block';
+            } else {
+                controls.style.display = 'none';
+            }
 
             const titles = {
                 'patient-overview': 'Patient Overview Section',
