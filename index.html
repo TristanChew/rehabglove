@@ -248,6 +248,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .card-header i {
@@ -259,6 +260,16 @@
             font-size: 18px;
             color: #334155;
             font-weight: 600;
+        }
+
+        .header-date-label {
+            margin-left: auto;
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 20px;
         }
 
         .card-body {
@@ -298,7 +309,7 @@
             margin-top: auto;
             color: #94a3b8;
             font-size: 13px;
-            padding: 10px 0;
+            padding: 10px 20px;
             border-top: 1px solid #e2e8f0;
             display: flex;
             justify-content: center;
@@ -390,6 +401,7 @@
                         <div class="card-header">
                             <i class="fas fa-calendar-day"></i>
                             <h3>Daily Statistics</h3>
+                            <span class="header-date-label" id="dailyDateLabel">--</span>
                         </div>
                         <div class="card-body">
                             <div class="placeholder-text">EXAMPLE</div>
@@ -403,6 +415,7 @@
                         <div class="card-header">
                             <i class="fas fa-calendar-week"></i>
                             <h3>Weekly Performance</h3>
+                            <span class="header-date-label" id="weeklyDateLabel">--</span>
                         </div>
                         <div class="card-body">
                             <div class="placeholder-text">EXAMPLE</div>
@@ -442,8 +455,7 @@
         </div>
         
         <footer class="footer">
-            CeroHeal Rehabilitation Glove System &copy; 2026. 
-            Developed by Tristan Chew Zun Yan - FYP in Mechatronics Engineering, ViTrox College.
+            CeroHeal Rehabilitation Glove System &copy; 2026. Developed by Tristan Chew Zun Yan - FYP in Mechatronics Engineering, ViTrox College.
         </footer>
     </main>
 
@@ -499,6 +511,50 @@
                 sessionStorage.removeItem('isLoggedIn');
                 window.location.href = 'login.html';
             }
+        });
+
+        /**
+         * Dynamic Date Calculation Logic
+         * Malaysia Time (UTC+8)
+         */
+        function updateHeaderDates() {
+            // Get current time in Malaysia
+            const malaysiaStr = new Date().toLocaleString("en-US", {timeZone: "Asia/Kuala_Lumpur"});
+            const malaysiaDate = new Date(malaysiaStr);
+            
+            const formatDate = (date) => {
+                const day = date.getDate();
+                const month = date.toLocaleString('en-GB', { month: 'short' });
+                const year = date.getFullYear();
+                return `${day} ${month} ${year}`;
+            };
+
+            // Calculate Yesterday
+            const yesterday = new Date(malaysiaDate);
+            yesterday.setDate(malaysiaDate.getDate() - 1);
+            document.getElementById('dailyDateLabel').innerText = formatDate(yesterday);
+
+            // Calculate Last Week (Previous Sunday to Previous Saturday)
+            // today.getDay() returns 0 for Sunday, 1 for Monday...
+            const currentDayOfWeek = malaysiaDate.getDay(); 
+            
+            // Last Saturday is always today minus (currentDayOfWeek + 1)
+            const lastSaturday = new Date(malaysiaDate);
+            lastSaturday.setDate(malaysiaDate.getDate() - (currentDayOfWeek + 1));
+            
+            // Last Sunday is Last Saturday minus 6 days
+            const lastSunday = new Date(lastSaturday);
+            lastSunday.setDate(lastSaturday.getDate() - 6);
+
+            document.getElementById('weeklyDateLabel').innerText = 
+                `${formatDate(lastSunday)} - ${formatDate(lastSaturday)}`;
+        }
+
+        // Run on load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHeaderDates();
+            // Optional: check for update every minute to handle 12:00am rollover
+            setInterval(updateHeaderDates, 60000);
         });
     </script>
 </body>
