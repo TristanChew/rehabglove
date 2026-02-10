@@ -29,8 +29,8 @@
             --danger-color: #d32f2f;
             --light-bg: #f8f9fa;
             --dark-bg: #0d1b2a;
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --border-radius: 12px;
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --border-radius: 16px;
         }
         
         body {
@@ -237,12 +237,12 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 500px;
+            min-height: 520px;
             margin-bottom: 25px;
         }
 
         .card-header {
-            padding: 20px 25px;
+            padding: 24px 30px;
             background-color: #fcfdfe;
             border-bottom: 1px solid #edf2f7;
             display: flex;
@@ -252,12 +252,12 @@
         }
 
         .card-header i {
-            font-size: 20px;
+            font-size: 24px;
             color: var(--secondary-color);
         }
 
         .card-header h3 {
-            font-size: 18px;
+            font-size: 20px;
             color: #334155;
             font-weight: 600;
         }
@@ -266,17 +266,18 @@
             margin-left: auto;
             font-size: 14px;
             color: #64748b;
-            font-weight: 500;
+            font-weight: 600;
             background: #f1f5f9;
-            padding: 4px 12px;
+            padding: 6px 16px;
             border-radius: 20px;
         }
 
         .card-body {
-            padding: 30px;
+            padding: 40px;
             flex: 1;
             display: flex;
             flex-direction: column;
+            justify-content: center;
         }
 
         /* Daily Stats Grid */
@@ -284,63 +285,73 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 20px;
+            gap: 30px;
             width: 100%;
-            height: 100%;
         }
 
         .stat-box {
             background: #ffffff;
             border: 1px solid #f1f5f9;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 30px 25px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: transform 0.2s;
+            gap: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .stat-box:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.06);
+            border-color: #e2e8f0;
         }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
+            width: 70px;
+            height: 70px;
+            min-width: 70px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 28px;
+            transition: transform 0.3s ease;
         }
 
-        .icon-blue { background: #eff6ff; color: #3b82f6; }
-        .icon-green { background: #f0fdf4; color: #22c55e; }
-        .icon-purple { background: #f5f3ff; color: #8b5cf6; }
-        .icon-orange { background: #fff7ed; color: #f97316; }
+        .stat-box:hover .stat-icon {
+            transform: scale(1.1);
+        }
+
+        .icon-blue { background: #eff6ff; color: #2563eb; }
+        .icon-green { background: #f0fdf4; color: #16a34a; }
+        .icon-purple { background: #f5f3ff; color: #7c3aed; }
+        .icon-orange { background: #fff7ed; color: #ea580c; }
         .icon-teal { background: #f0fdfa; color: #0d9488; }
-        .icon-red { background: #fef2f2; color: #ef4444; }
+        .icon-red { background: #fef2f2; color: #dc2626; }
 
         .stat-info {
             display: flex;
             flex-direction: column;
+            justify-content: center;
         }
 
         .stat-label {
-            font-size: 12px;
-            color: #94a3b8;
+            font-size: 13px;
+            color: #64748b;
             text-transform: uppercase;
             font-weight: 700;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
         }
 
         .stat-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1e293b;
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
         }
 
         .placeholder-box {
@@ -350,19 +361,21 @@
             justify-content: center;
             text-align: center;
             flex: 1;
+            padding: 40px;
         }
 
         .placeholder-text {
-            font-size: 42px;
-            font-weight: 800;
+            font-size: 48px;
+            font-weight: 900;
             color: #e2e8f0;
-            letter-spacing: 4px;
-            margin-bottom: 10px;
+            letter-spacing: 8px;
+            margin-bottom: 15px;
         }
 
         .placeholder-desc {
             color: #94a3b8;
-            font-size: 16px;
+            font-size: 18px;
+            max-width: 500px;
         }
 
         .view-content {
@@ -380,14 +393,15 @@
             margin-top: auto;
             color: #94a3b8;
             font-size: 13px;
-            padding: 10px 20px;
+            padding: 15px 20px;
             border-top: 1px solid #e2e8f0;
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
-            min-height: 40px;
+            min-height: 50px;
             width: 100%;
+            background-color: white;
         }
 
         @keyframes fadeIn {
@@ -395,6 +409,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
+        @media (max-width: 1250px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
         @media (max-width: 1100px) {
             .sidebar { width: 80px; }
             .logo-text, .logo-subtitle, .user-details, .logout-btn span, .nav-item span { display: none; }
@@ -402,10 +420,13 @@
             .logo-container { justify-content: center; padding: 25px 10px; }
             .user-info { padding: 15px 10px; flex-direction: column; align-items: center; }
             .main-content { margin-left: 80px; padding: 20px; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); }
         }
-        @media (max-width: 600px) {
-            .stats-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+
+        @media (max-width: 800px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .top-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
+            #top-bar-controls { width: 100%; }
+            .overview-selector { width: 100%; }
         }
     </style>
 </head>
@@ -522,7 +543,7 @@
                                 </div>
                                 <!-- Prediction -->
                                 <div class="stat-box">
-                                    <div class="stat-icon icon-purple"><i class="fas fa-forward"></i></div>
+                                    <div class="stat-icon icon-red"><i class="fas fa-forward"></i></div>
                                     <div class="stat-info">
                                         <span class="stat-label">Prediction (Tomorrow)</span>
                                         <span class="stat-value" id="val-predtmr">N/A</span>
