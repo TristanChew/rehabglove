@@ -273,13 +273,83 @@
         }
 
         .card-body {
-            padding: 40px;
+            padding: 30px;
             flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Daily Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .stat-box {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .icon-blue { background: #eff6ff; color: #3b82f6; }
+        .icon-green { background: #f0fdf4; color: #22c55e; }
+        .icon-purple { background: #f5f3ff; color: #8b5cf6; }
+        .icon-orange { background: #fff7ed; color: #f97316; }
+        .icon-teal { background: #f0fdfa; color: #0d9488; }
+        .icon-red { background: #fef2f2; color: #ef4444; }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .placeholder-box {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
+            flex: 1;
         }
 
         .placeholder-text {
@@ -298,6 +368,7 @@
         .view-content {
             display: none;
             width: 100%;
+            height: 100%;
         }
 
         .view-content.active {
@@ -331,6 +402,10 @@
             .logo-container { justify-content: center; padding: 25px 10px; }
             .user-info { padding: 15px 10px; flex-direction: column; align-items: center; }
             .main-content { margin-left: 80px; padding: 20px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
         }
     </style>
 </head>
@@ -403,9 +478,57 @@
                             <h3>Daily Statistics</h3>
                             <span class="header-date-label" id="dailyDateLabel">--</span>
                         </div>
-                        <div class="card-body">
-                            <div class="placeholder-text">EXAMPLE</div>
-                            <p class="placeholder-desc">Real-time daily activity tracking and session logs will be populated here.</p>
+                        <div class="card-body" id="dailyStatsContainer">
+                            <div class="stats-grid">
+                                <!-- Mode -->
+                                <div class="stat-box">
+                                    <div class="stat-icon icon-purple"><i class="fas fa-robot"></i></div>
+                                    <div class="stat-info">
+                                        <span class="stat-label">Current Mode</span>
+                                        <span class="stat-value" id="val-mode">N/A</span>
+                                    </div>
+                                </div>
+                                <!-- Sessions -->
+                                <div class="stat-box">
+                                    <div class="stat-icon icon-blue"><i class="fas fa-check-double"></i></div>
+                                    <div class="stat-info">
+                                        <span class="stat-label">Sessions Completed</span>
+                                        <span class="stat-value" id="val-sessions">0/3</span>
+                                    </div>
+                                </div>
+                                <!-- Duration -->
+                                <div class="stat-box">
+                                    <div class="stat-icon icon-orange"><i class="fas fa-clock"></i></div>
+                                    <div class="stat-info">
+                                        <span class="stat-label">Avg Session Duration</span>
+                                        <span class="stat-value" id="val-duration">N/A</span>
+                                    </div>
+                                </div>
+                                <!-- Recovery Index -->
+                                <div class="stat-box">
+                                    <div class="stat-icon icon-teal"><i class="fas fa-heartbeat"></i></div>
+                                    <div class="stat-info">
+                                        <span class="stat-label">Current Recovery Index</span>
+                                        <span class="stat-value" id="val-recindex">N/A</span>
+                                    </div>
+                                </div>
+                                <!-- Improvement -->
+                                <div class="stat-box">
+                                    <div class="stat-icon icon-green"><i class="fas fa-chart-line"></i></div>
+                                    <div class="stat-info">
+                                        <span class="stat-label">Recovery Improvement</span>
+                                        <span class="stat-value" id="val-recimprove">N/A</span>
+                                    </div>
+                                </div>
+                                <!-- Prediction -->
+                                <div class="stat-box">
+                                    <div class="stat-icon icon-purple"><i class="fas fa-forward"></i></div>
+                                    <div class="stat-info">
+                                        <span class="stat-label">Prediction (Tomorrow)</span>
+                                        <span class="stat-value" id="val-predtmr">N/A</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -418,8 +541,10 @@
                             <span class="header-date-label" id="weeklyDateLabel">--</span>
                         </div>
                         <div class="card-body">
-                            <div class="placeholder-text">EXAMPLE</div>
-                            <p class="placeholder-desc">Aggregated weekly performance trends and comparative metrics will be displayed here.</p>
+                            <div class="placeholder-box">
+                                <div class="placeholder-text">EXAMPLE</div>
+                                <p class="placeholder-desc">Aggregated weekly performance trends and comparative metrics will be displayed here.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -433,8 +558,10 @@
                         <h3>Data Charts</h3>
                     </div>
                     <div class="card-body">
-                        <div class="placeholder-text">EXAMPLE</div>
-                        <p class="placeholder-desc">Real-time glove sensor data and historical progress charts will be displayed here.</p>
+                        <div class="placeholder-box">
+                            <div class="placeholder-text">EXAMPLE</div>
+                            <p class="placeholder-desc">Real-time glove sensor data and historical progress charts will be displayed here.</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -447,8 +574,10 @@
                         <h3>Summary Report</h3>
                     </div>
                     <div class="card-body">
-                        <div class="placeholder-text">EXAMPLE</div>
-                        <p class="placeholder-desc">Automated session summaries and rehabilitation reports will be displayed here.</p>
+                        <div class="placeholder-box">
+                            <div class="placeholder-text">EXAMPLE</div>
+                            <p class="placeholder-desc">Automated session summaries and rehabilitation reports will be displayed here.</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -517,6 +646,8 @@
          * Dynamic Date Calculation Logic
          * Malaysia Time (UTC+8)
          */
+        let globalYesterdayDate = null; // Store for fetching
+
         function updateHeaderDates() {
             // Get current time in Malaysia
             const malaysiaStr = new Date().toLocaleString("en-US", {timeZone: "Asia/Kuala_Lumpur"});
@@ -532,17 +663,13 @@
             // Calculate Yesterday
             const yesterday = new Date(malaysiaDate);
             yesterday.setDate(malaysiaDate.getDate() - 1);
+            globalYesterdayDate = yesterday;
             document.getElementById('dailyDateLabel').innerText = formatDate(yesterday);
 
             // Calculate Last Week (Previous Sunday to Previous Saturday)
-            // today.getDay() returns 0 for Sunday, 1 for Monday...
             const currentDayOfWeek = malaysiaDate.getDay(); 
-            
-            // Last Saturday is always today minus (currentDayOfWeek + 1)
             const lastSaturday = new Date(malaysiaDate);
             lastSaturday.setDate(malaysiaDate.getDate() - (currentDayOfWeek + 1));
-            
-            // Last Sunday is Last Saturday minus 6 days
             const lastSunday = new Date(lastSaturday);
             lastSunday.setDate(lastSaturday.getDate() - 6);
 
@@ -550,11 +677,122 @@
                 `${formatDate(lastSunday)} - ${formatDate(lastSaturday)}`;
         }
 
+        /**
+         * CSV Data Fetching & Processing Logic
+         */
+        async function fetchDailyCSV() {
+            if (!globalYesterdayDate) return;
+
+            const yyyy = globalYesterdayDate.getFullYear();
+            const mm = String(globalYesterdayDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(globalYesterdayDate.getDate()).padStart(2, '0');
+            const fileName = `${yyyy}${mm}${dd}_DATA.csv`;
+            const filePath = `./DATA/${fileName}`;
+
+            try {
+                const response = await fetch(filePath);
+                if (!response.ok) {
+                    console.log(`File not found: ${filePath}`);
+                    displayNA();
+                    return;
+                }
+                const csvText = await response.text();
+                processCSV(csvText);
+            } catch (error) {
+                console.error('Error fetching CSV:', error);
+                displayNA();
+            }
+        }
+
+        function processCSV(text) {
+            const lines = text.trim().split('\n');
+            if (lines.length < 2) {
+                displayNA();
+                return;
+            }
+
+            // Skip header if it exists
+            const hasHeader = lines[0].toLowerCase().includes('time');
+            const dataLines = hasHeader ? lines.slice(1) : lines;
+
+            if (dataLines.length === 0) {
+                displayNA();
+                return;
+            }
+
+            let totalCount = 0;
+            let sumDuration = 0;
+            let sumRecIndex = 0;
+            let sumRecImprove = 0;
+            let sumPredTmr = 0;
+            let validPredCount = 0;
+            let lastMode = 'N/A';
+
+            dataLines.forEach((line, index) => {
+                const columns = line.split(',').map(c => c.trim());
+                if (columns.length < 11) return;
+
+                // Mode (take last valid)
+                if (columns[1]) lastMode = columns[1].charAt(0).toUpperCase() + columns[1].slice(1);
+
+                // Count
+                const count = parseFloat(columns[2]) || 1;
+                totalCount += count;
+
+                // Duration
+                sumDuration += parseFloat(columns[3]) || 0;
+
+                // Rec Index
+                sumRecIndex += parseFloat(columns[8]) || 0;
+
+                // Rec Improve (handle + sign if numeric)
+                const impRaw = columns[9].replace('+', '');
+                sumRecImprove += parseFloat(impRaw) || 0;
+
+                // Pred Tmr
+                const predVal = columns[10];
+                if (predVal && predVal.toUpperCase() !== 'N/A') {
+                    sumPredTmr += parseFloat(predVal) || 0;
+                    validPredCount++;
+                }
+            });
+
+            const rowCount = dataLines.length;
+            
+            // Updates
+            document.getElementById('val-mode').innerText = lastMode;
+            document.getElementById('val-sessions').innerText = `${rowCount}/3`;
+            document.getElementById('val-duration').innerText = `${(sumDuration / rowCount).toFixed(1)} min`;
+            document.getElementById('val-recindex').innerText = `${(sumRecIndex / rowCount).toFixed(2)}%`;
+            
+            const avgImprove = (sumRecImprove / rowCount).toFixed(2);
+            document.getElementById('val-recimprove').innerText = `${avgImprove > 0 ? '+' : ''}${avgImprove}%`;
+            
+            if (validPredCount > 0) {
+                document.getElementById('val-predtmr').innerText = `${(sumPredTmr / validPredCount).toFixed(2)}%`;
+            } else {
+                document.getElementById('val-predtmr').innerText = 'N/A';
+            }
+        }
+
+        function displayNA() {
+            document.getElementById('val-mode').innerText = 'N/A';
+            document.getElementById('val-sessions').innerText = '0/3';
+            document.getElementById('val-duration').innerText = 'N/A';
+            document.getElementById('val-recindex').innerText = 'N/A';
+            document.getElementById('val-recimprove').innerText = 'N/A';
+            document.getElementById('val-predtmr').innerText = 'N/A';
+        }
+
         // Run on load
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             updateHeaderDates();
+            await fetchDailyCSV();
             // Optional: check for update every minute to handle 12:00am rollover
-            setInterval(updateHeaderDates, 60000);
+            setInterval(async () => {
+                updateHeaderDates();
+                await fetchDailyCSV();
+            }, 60000);
         });
     </script>
 </body>
