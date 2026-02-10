@@ -277,7 +277,146 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        /* CSV Section Styles */
+        .file-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: center;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .file-list-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .csv-file-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .csv-file-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-icon {
+            font-size: 24px;
+            color: #0d9488;
+            background: #f0fdfa;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
             justify-content: center;
+        }
+
+        .file-details h4 {
+            font-size: 14px;
+            color: #1e293b;
+            margin-bottom: 2px;
+        }
+
+        .file-details p {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .view-btn { background: #eff6ff; color: #2563eb; border-color: #dbeafe; }
+        .view-btn:hover { background: #dbeafe; }
+        .dl-btn { background: #f0fdf4; color: #16a34a; border-color: #dcfce7; }
+        .dl-btn:hover { background: #dcfce7; }
+
+        .csv-viewer-container {
+            margin-top: 30px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .viewer-header {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .viewer-table-wrapper {
+            max-height: 400px;
+            overflow: auto;
+        }
+
+        table.csv-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        table.csv-data-table th {
+            background: #f1f5f9;
+            padding: 12px 15px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            color: #475569;
+            font-weight: 700;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        table.csv-data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }
+
+        table.csv-data-table tr:hover {
+            background: #f8fafc;
         }
 
         /* Daily Stats Grid */
@@ -427,6 +566,7 @@
             .top-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
             #top-bar-controls { width: 100%; }
             .overview-selector { width: 100%; }
+            .file-controls { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
@@ -455,6 +595,10 @@
             <button class="nav-item" onclick="openSection(event, 'summary-report')">
                 <i class="fas fa-file-medical-alt"></i>
                 <span>Summary Report</span>
+            </button>
+            <button class="nav-item" onclick="openSection(event, 'csv-files')">
+                <i class="fas fa-file-csv"></i>
+                <span>Direct CSV Data Files</span>
             </button>
         </div>
         
@@ -602,6 +746,48 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Direct CSV Data Files Section -->
+            <section id="csv-files" class="tab-content">
+                <div class="data-card">
+                    <div class="card-header">
+                        <i class="fas fa-folder-open"></i>
+                        <h3>Direct CSV Data Files</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="file-controls">
+                            <label style="font-size: 14px; font-weight: 600; color: #475569;">Find File by Date:</label>
+                            <input type="date" id="csvSearchDate" class="overview-selector">
+                            <button class="logout-btn" style="width: auto; background: var(--primary-color);" onclick="lookupSpecificCSV()">
+                                <i class="fas fa-search"></i> Look Up
+                            </button>
+                        </div>
+
+                        <div id="file-list" class="file-list-container">
+                            <!-- Populated dynamically -->
+                            <div class="placeholder-box" style="padding: 20px; opacity: 0.6;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 30px; margin-bottom: 10px;"></i>
+                                <p>Scanning for recent session data...</p>
+                            </div>
+                        </div>
+
+                        <!-- Data Viewer -->
+                        <div id="csv-viewer" class="csv-viewer-container">
+                            <div class="viewer-header">
+                                <h4 id="viewing-filename" style="font-size: 14px; color: #1e293b;">Viewing File</h4>
+                                <button class="logout-btn" style="width: auto; padding: 6px 12px; background: #64748b;" onclick="closeCSVViewer()">
+                                    <i class="fas fa-times"></i> Close
+                                </button>
+                            </div>
+                            <div class="viewer-table-wrapper">
+                                <table id="csv-data-table" class="csv-data-table">
+                                    <!-- Table data -->
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
         
         <footer class="footer">
@@ -635,9 +821,14 @@
             const titles = {
                 'patient-overview': 'Patient Overview Section',
                 'data-charts': 'Data Charts & Analytics',
-                'summary-report': 'Medical Summary Reports'
+                'summary-report': 'Medical Summary Reports',
+                'csv-files': 'CSV File Management'
             };
             document.getElementById('section-subtitle').innerText = titles[sectionId];
+
+            if (sectionId === 'csv-files') {
+                scanRecentCSVFiles();
+            }
         }
 
         // Overview Toggling Logic
@@ -667,10 +858,9 @@
          * Dynamic Date Calculation Logic
          * Malaysia Time (UTC+8)
          */
-        let globalYesterdayDate = null; // Store for fetching
+        let globalYesterdayDate = null; 
 
         function updateHeaderDates() {
-            // Get current time in Malaysia
             const malaysiaStr = new Date().toLocaleString("en-US", {timeZone: "Asia/Kuala_Lumpur"});
             const malaysiaDate = new Date(malaysiaStr);
             
@@ -681,13 +871,11 @@
                 return `${day} ${month} ${year}`;
             };
 
-            // Calculate Yesterday
             const yesterday = new Date(malaysiaDate);
             yesterday.setDate(malaysiaDate.getDate() - 1);
             globalYesterdayDate = yesterday;
             document.getElementById('dailyDateLabel').innerText = formatDate(yesterday);
 
-            // Calculate Last Week (Previous Sunday to Previous Saturday)
             const currentDayOfWeek = malaysiaDate.getDay(); 
             const lastSaturday = new Date(malaysiaDate);
             lastSaturday.setDate(malaysiaDate.getDate() - (currentDayOfWeek + 1));
@@ -713,33 +901,22 @@
             try {
                 const response = await fetch(filePath);
                 if (!response.ok) {
-                    console.log(`File not found: ${filePath}`);
                     displayNA();
                     return;
                 }
                 const csvText = await response.text();
-                processCSV(csvText);
+                processCSVForStats(csvText);
             } catch (error) {
-                console.error('Error fetching CSV:', error);
                 displayNA();
             }
         }
 
-        function processCSV(text) {
+        function processCSVForStats(text) {
             const lines = text.trim().split('\n');
-            if (lines.length < 2) {
-                displayNA();
-                return;
-            }
-
-            // Skip header if it exists
+            if (lines.length < 2) { displayNA(); return; }
             const hasHeader = lines[0].toLowerCase().includes('time');
             const dataLines = hasHeader ? lines.slice(1) : lines;
-
-            if (dataLines.length === 0) {
-                displayNA();
-                return;
-            }
+            if (dataLines.length === 0) { displayNA(); return; }
 
             let totalCount = 0;
             let sumDuration = 0;
@@ -749,28 +926,15 @@
             let validPredCount = 0;
             let lastMode = 'N/A';
 
-            dataLines.forEach((line, index) => {
+            dataLines.forEach((line) => {
                 const columns = line.split(',').map(c => c.trim());
                 if (columns.length < 11) return;
-
-                // Mode (take last valid)
                 if (columns[1]) lastMode = columns[1].charAt(0).toUpperCase() + columns[1].slice(1);
-
-                // Count
-                const count = parseFloat(columns[2]) || 1;
-                totalCount += count;
-
-                // Duration
+                totalCount += parseFloat(columns[2]) || 1;
                 sumDuration += parseFloat(columns[3]) || 0;
-
-                // Rec Index
                 sumRecIndex += parseFloat(columns[8]) || 0;
-
-                // Rec Improve (handle + sign if numeric)
                 const impRaw = columns[9].replace('+', '');
                 sumRecImprove += parseFloat(impRaw) || 0;
-
-                // Pred Tmr
                 const predVal = columns[10];
                 if (predVal && predVal.toUpperCase() !== 'N/A') {
                     sumPredTmr += parseFloat(predVal) || 0;
@@ -779,16 +943,12 @@
             });
 
             const rowCount = dataLines.length;
-            
-            // Updates
             document.getElementById('val-mode').innerText = lastMode;
             document.getElementById('val-sessions').innerText = `${rowCount}/3`;
             document.getElementById('val-duration').innerText = `${(sumDuration / rowCount).toFixed(1)} min`;
             document.getElementById('val-recindex').innerText = `${(sumRecIndex / rowCount).toFixed(2)}%`;
-            
             const avgImprove = (sumRecImprove / rowCount).toFixed(2);
             document.getElementById('val-recimprove').innerText = `${avgImprove > 0 ? '+' : ''}${avgImprove}%`;
-            
             if (validPredCount > 0) {
                 document.getElementById('val-predtmr').innerText = `${(sumPredTmr / validPredCount).toFixed(2)}%`;
             } else {
@@ -805,11 +965,145 @@
             document.getElementById('val-predtmr').innerText = 'N/A';
         }
 
+        /**
+         * CSV Browser Specific Logic
+         */
+        async function scanRecentCSVFiles() {
+            const listEl = document.getElementById('file-list');
+            listEl.innerHTML = '';
+            
+            const malaysiaStr = new Date().toLocaleString("en-US", {timeZone: "Asia/Kuala_Lumpur"});
+            const today = new Date(malaysiaStr);
+            
+            let filesFound = 0;
+            // Scan last 7 days
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+                const yyyy = date.getFullYear();
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const dd = String(date.getDate()).padStart(2, '0');
+                const fileName = `${yyyy}${mm}${dd}_DATA.csv`;
+                const exists = await checkFileExists(`./DATA/${fileName}`);
+                
+                if (exists) {
+                    filesFound++;
+                    addFileCard(fileName, date);
+                }
+            }
+
+            if (filesFound === 0) {
+                listEl.innerHTML = `
+                    <div class="placeholder-box" style="padding: 40px; border: 1px dashed #e2e8f0; border-radius: 12px; grid-column: 1/-1;">
+                        <i class="fas fa-file-excel" style="font-size: 40px; color: #e2e8f0; margin-bottom: 15px;"></i>
+                        <p style="color: #94a3b8;">No recent CSV files found in the /DATA folder.</p>
+                    </div>`;
+            }
+        }
+
+        async function checkFileExists(url) {
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                return response.ok;
+            } catch {
+                return false;
+            }
+        }
+
+        function addFileCard(fileName, date) {
+            const listEl = document.getElementById('file-list');
+            const dateStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            
+            const card = document.createElement('div');
+            card.className = 'csv-file-card';
+            card.innerHTML = `
+                <div class="file-info">
+                    <div class="file-icon"><i class="fas fa-file-csv"></i></div>
+                    <div class="file-details">
+                        <h4>${fileName}</h4>
+                        <p>${dateStr}</p>
+                    </div>
+                </div>
+                <div class="file-actions">
+                    <button class="action-btn view-btn" onclick="viewCSV('${fileName}')">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    <a href="./DATA/${fileName}" download="${fileName}" class="action-btn dl-btn" style="text-decoration: none;">
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                </div>
+            `;
+            listEl.appendChild(card);
+        }
+
+        async function lookupSpecificCSV() {
+            const searchDateInput = document.getElementById('csvSearchDate');
+            if (!searchDateInput.value) {
+                alert('Please select a date.');
+                return;
+            }
+            
+            const dateParts = searchDateInput.value.split('-'); // YYYY-MM-DD
+            const fileName = `${dateParts[0]}${dateParts[1]}${dateParts[2]}_DATA.csv`;
+            const filePath = `./DATA/${fileName}`;
+            
+            const exists = await checkFileExists(filePath);
+            if (exists) {
+                const dateObj = new Date(searchDateInput.value);
+                // Clear and just show this one or highlight it
+                document.getElementById('file-list').innerHTML = '';
+                addFileCard(fileName, dateObj);
+            } else {
+                alert(`No data found for ${searchDateInput.value}. Expected file: ${fileName}`);
+            }
+        }
+
+        async function viewCSV(fileName) {
+            const viewer = document.getElementById('csv-viewer');
+            const table = document.getElementById('csv-data-table');
+            const filenameLabel = document.getElementById('viewing-filename');
+            
+            filenameLabel.innerText = `Viewing: ${fileName}`;
+            viewer.style.display = 'block';
+            table.innerHTML = '<tr><td style="text-align:center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Loading data...</td></tr>';
+            
+            try {
+                const response = await fetch(`./DATA/${fileName}`);
+                const text = await response.text();
+                const lines = text.trim().split('\n');
+                
+                if (lines.length === 0) {
+                    table.innerHTML = '<tr><td>File is empty.</td></tr>';
+                    return;
+                }
+                
+                let tableHtml = '';
+                lines.forEach((line, index) => {
+                    const columns = line.split(',');
+                    const tag = index === 0 ? 'th' : 'td';
+                    tableHtml += '<tr>';
+                    columns.forEach(col => {
+                        tableHtml += `<${tag}>${col.trim()}</${tag}>`;
+                    });
+                    tableHtml += '</tr>';
+                });
+                table.innerHTML = tableHtml;
+                
+                // Scroll into view
+                viewer.scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                table.innerHTML = '<tr><td style="color:red;">Error loading file content.</td></tr>';
+            }
+        }
+
+        function closeCSVViewer() {
+            document.getElementById('csv-viewer').style.display = 'none';
+        }
+
         // Run on load
         document.addEventListener('DOMContentLoaded', async () => {
             updateHeaderDates();
             await fetchDailyCSV();
-            // Optional: check for update every minute to handle 12:00am rollover
             setInterval(async () => {
                 updateHeaderDates();
                 await fetchDailyCSV();
