@@ -65,7 +65,7 @@
         }
         
         .logo {
-            font-size: 32px;
+            font-size: 48px;
             color: white;
         }
         
@@ -280,165 +280,7 @@
             justify-content: flex-start;
         }
 
-        /* CSV Section Styles */
-        .file-controls {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            align-items: center;
-            background: #f8fafc;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px dashed #cbd5e1;
-        }
-
-        .info-note {
-            background-color: #f0f9ff;
-            border: 1px solid #bae6fd;
-            color: #0369a1;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 25px;
-            font-weight: 500;
-        }
-
-        .info-note i {
-            font-size: 18px;
-            color: #0ea5e9;
-        }
-
-        .file-list-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            width: 100%;
-        }
-
-        .csv-file-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .csv-file-card:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .file-icon {
-            font-size: 24px;
-            color: #0d9488;
-            background: #f0fdfa;
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .file-details h4 {
-            font-size: 14px;
-            color: #1e293b;
-            margin-bottom: 2px;
-        }
-
-        .file-details p {
-            font-size: 12px;
-            color: #64748b;
-        }
-
-        .file-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-
-        .view-btn { background: #eff6ff; color: #2563eb; border-color: #dbeafe; }
-        .view-btn:hover { background: #dbeafe; }
-        .dl-btn { background: #f0fdf4; color: #16a34a; border-color: #dcfce7; }
-        .dl-btn:hover { background: #dcfce7; }
-
-        .csv-viewer-container {
-            margin-top: 30px;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            overflow: hidden;
-            display: none;
-        }
-
-        .viewer-header {
-            background: #f8fafc;
-            padding: 15px 20px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .viewer-table-wrapper {
-            max-height: 400px;
-            overflow: auto;
-        }
-
-        table.csv-data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        table.csv-data-table th {
-            background: #f1f5f9;
-            padding: 12px 15px;
-            text-align: left;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            color: #475569;
-            font-weight: 700;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        table.csv-data-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f1f5f9;
-            color: #334155;
-        }
-
-        table.csv-data-table tr:hover {
-            background: #f8fafc;
-        }
-
-        /* Daily Stats Grid */
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -512,30 +354,6 @@
             line-height: 1.2;
         }
 
-        .placeholder-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            flex: 1;
-            padding: 40px;
-        }
-
-        .placeholder-text {
-            font-size: 48px;
-            font-weight: 900;
-            color: #e2e8f0;
-            letter-spacing: 8px;
-            margin-bottom: 15px;
-        }
-
-        .placeholder-desc {
-            color: #94a3b8;
-            font-size: 18px;
-            max-width: 500px;
-        }
-
         .view-content {
             display: none;
             width: 100%;
@@ -546,7 +364,137 @@
             display: block;
         }
         
-        /* Optimized Footer Styles */
+        /* CSV Browser Styles */
+        .info-note {
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .file-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .file-list-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .csv-file-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .csv-file-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-icon-csv {
+            font-size: 24px;
+            color: #0d9488;
+            background: #f0fdfa;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .view-btn { background: #eff6ff; color: #2563eb; border-color: #dbeafe; }
+        .dl-btn { background: #f0fdf4; color: #16a34a; border-color: #dcfce7; }
+
+        .csv-viewer-container {
+            margin-top: 30px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .viewer-header {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .viewer-table-wrapper {
+            max-height: 400px;
+            overflow: auto;
+        }
+
+        table.csv-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        table.csv-data-table th, table.csv-data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        table.csv-data-table th { background: #f1f5f9; font-weight: 700; position: sticky; top: 0; }
+
+        .placeholder-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex: 1;
+            padding: 40px;
+        }
+
         .footer {
             margin-top: auto;
             color: #94a3b8;
@@ -576,68 +524,50 @@
             .logo-text, .logo-subtitle, .user-details, .logout-btn span, .nav-item span { display: none; }
             .nav-item i { margin-right: 0; }
             .logo-container { justify-content: center; padding: 25px 10px; }
-            .user-info { padding: 15px 10px; flex-direction: column; align-items: center; }
             .main-content { margin-left: 80px; padding: 20px; }
         }
 
         @media (max-width: 800px) {
             .stats-grid { grid-template-columns: 1fr; }
             .top-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
-            #top-bar-controls { width: 100%; }
-            .overview-selector { width: 100%; }
             .file-controls { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar Navigation -->
     <nav class="sidebar">
         <div class="logo-container">
-            <div class="logo">
-                <i class="fas fa-hand-holding-medical"></i>
-            </div>
+            <div class="logo"><i class="fas fa-hand-holding-medical"></i></div>
             <div>
                 <div class="logo-text">CeroHeal</div>
                 <div class="logo-subtitle">Rehab Glove System</div>
             </div>
         </div>
-
         <div class="nav-menu">
             <button class="nav-item active" onclick="openSection(event, 'patient-overview')">
-                <i class="fas fa-id-card-alt"></i>
-                <span>Patient Overview</span>
+                <i class="fas fa-id-card-alt"></i><span>Patient Overview</span>
             </button>
             <button class="nav-item" onclick="openSection(event, 'data-charts')">
-                <i class="fas fa-chart-line"></i>
-                <span>Data Charts</span>
+                <i class="fas fa-chart-line"></i><span>Data Charts</span>
             </button>
             <button class="nav-item" onclick="openSection(event, 'summary-report')">
-                <i class="fas fa-file-medical-alt"></i>
-                <span>Summary Report</span>
+                <i class="fas fa-file-medical-alt"></i><span>Summary Report</span>
             </button>
             <button class="nav-item" onclick="openSection(event, 'csv-files')">
-                <i class="fas fa-file-csv"></i>
-                <span>Direct CSV Data Files</span>
+                <i class="fas fa-file-csv"></i><span>Direct CSV Data Files</span>
             </button>
         </div>
-        
         <div class="user-info">
-            <div class="user-avatar">
-                <i class="fas fa-user-md"></i>
-            </div>
+            <div class="user-avatar"><i class="fas fa-user-md"></i></div>
             <div class="user-details">
                 <h4>Dr. Lim Chong Hooi</h4>
                 <p>Supervisor / Therapist</p>
                 <p>ViTrox College</p>
             </div>
-            <button class="logout-btn" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </button>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
         </div>
     </nav>
     
-    <!-- Main Content -->
     <main class="main-content">
         <div class="top-bar">
             <div class="page-title">
@@ -653,7 +583,6 @@
         </div>
 
         <div class="dashboard-body">
-            <!-- Patient Overview Section -->
             <section id="patient-overview" class="tab-content active">
                 <div id="daily-view" class="view-content active">
                     <div class="data-card">
@@ -662,56 +591,14 @@
                             <h3>Daily Statistics</h3>
                             <span class="header-date-label" id="dailyDateLabel">--</span>
                         </div>
-                        <div class="card-body" id="dailyStatsContainer">
+                        <div class="card-body">
                             <div class="stats-grid">
-                                <!-- Mode -->
-                                <div class="stat-box">
-                                    <div class="stat-icon icon-purple"><i class="fas fa-robot"></i></div>
-                                    <div class="stat-info">
-                                        <span class="stat-label">Current Mode</span>
-                                        <span class="stat-value" id="val-mode">N/A</span>
-                                    </div>
-                                </div>
-                                <!-- Sessions -->
-                                <div class="stat-box">
-                                    <div class="stat-icon icon-blue"><i class="fas fa-check-double"></i></div>
-                                    <div class="stat-info">
-                                        <span class="stat-label">Sessions Completed</span>
-                                        <span class="stat-value" id="val-sessions">0/3</span>
-                                    </div>
-                                </div>
-                                <!-- Duration -->
-                                <div class="stat-box">
-                                    <div class="stat-icon icon-orange"><i class="fas fa-clock"></i></div>
-                                    <div class="stat-info">
-                                        <span class="stat-label">Avg Session Duration</span>
-                                        <span class="stat-value" id="val-duration">N/A</span>
-                                    </div>
-                                </div>
-                                <!-- Recovery Index -->
-                                <div class="stat-box">
-                                    <div class="stat-icon icon-teal"><i class="fas fa-heartbeat"></i></div>
-                                    <div class="stat-info">
-                                        <span class="stat-label">Current Recovery Index</span>
-                                        <span class="stat-value" id="val-recindex">N/A</span>
-                                    </div>
-                                </div>
-                                <!-- Improvement -->
-                                <div class="stat-box">
-                                    <div class="stat-icon icon-green"><i class="fas fa-chart-line"></i></div>
-                                    <div class="stat-info">
-                                        <span class="stat-label">Recovery Improvement</span>
-                                        <span class="stat-value" id="val-recimprove">N/A</span>
-                                    </div>
-                                </div>
-                                <!-- Prediction -->
-                                <div class="stat-box">
-                                    <div class="stat-icon icon-red"><i class="fas fa-forward"></i></div>
-                                    <div class="stat-info">
-                                        <span class="stat-label">Prediction (Tomorrow)</span>
-                                        <span class="stat-value" id="val-predtmr">N/A</span>
-                                    </div>
-                                </div>
+                                <div class="stat-box"><div class="stat-icon icon-purple"><i class="fas fa-robot"></i></div><div class="stat-info"><span class="stat-label">Current Mode</span><span class="stat-value" id="val-mode">N/A</span></div></div>
+                                <div class="stat-box"><div class="stat-icon icon-blue"><i class="fas fa-check-double"></i></div><div class="stat-info"><span class="stat-label">Sessions Completed</span><span class="stat-value" id="val-sessions">0/3</span></div></div>
+                                <div class="stat-box"><div class="stat-icon icon-orange"><i class="fas fa-clock"></i></div><div class="stat-info"><span class="stat-label">Avg Session Duration</span><span class="stat-value" id="val-duration">N/A</span></div></div>
+                                <div class="stat-box"><div class="stat-icon icon-teal"><i class="fas fa-heartbeat"></i></div><div class="stat-info"><span class="stat-label">Current Recovery Index</span><span class="stat-value" id="val-recindex">N/A</span></div></div>
+                                <div class="stat-box"><div class="stat-icon icon-green"><i class="fas fa-chart-line"></i></div><div class="stat-info"><span class="stat-label">Recovery Improvement</span><span class="stat-value" id="val-recimprove">N/A</span></div></div>
+                                <div class="stat-box"><div class="stat-icon icon-red"><i class="fas fa-forward"></i></div><div class="stat-info"><span class="stat-label">Prediction (Tomorrow)</span><span class="stat-value" id="val-predtmr">N/A</span></div></div>
                             </div>
                         </div>
                     </div>
@@ -725,9 +612,13 @@
                             <span class="header-date-label" id="weeklyDateLabel">--</span>
                         </div>
                         <div class="card-body">
-                            <div class="placeholder-box">
-                                <div class="placeholder-text">EXAMPLE</div>
-                                <p class="placeholder-desc">Aggregated weekly performance trends and comparative metrics will be displayed here.</p>
+                            <div class="stats-grid">
+                                <div class="stat-box"><div class="stat-icon icon-purple"><i class="fas fa-robot"></i></div><div class="stat-info"><span class="stat-label">Current Mode</span><span class="stat-value" id="w-val-mode">N/A</span></div></div>
+                                <div class="stat-box"><div class="stat-icon icon-blue"><i class="fas fa-tasks"></i></div><div class="stat-info"><span class="stat-label">Sessions Completed</span><span class="stat-value" id="w-val-sessions">0/21</span></div></div>
+                                <div class="stat-box"><div class="stat-icon icon-orange"><i class="fas fa-stopwatch"></i></div><div class="stat-info"><span class="stat-label">Avg Session Duration</span><span class="stat-value" id="w-val-duration">N/A</span></div></div>
+                                <div class="stat-box"><div class="stat-icon icon-teal"><i class="fas fa-chart-bar"></i></div><div class="stat-info"><span class="stat-label">Avg Recovery Index</span><span class="stat-value" id="w-val-recindex">N/A</span></div></div>
+                                <div class="stat-box"><div class="stat-icon icon-green"><i class="fas fa-level-up-alt"></i></div><div class="stat-info"><span class="stat-label">Weekly Improvement</span><span class="stat-value" id="w-val-recimprove">N/A</span></div></div>
+                                <div class="stat-box"><div class="stat-icon icon-red"><i class="fas fa-crystal-ball"></i></div><div class="stat-info"><span class="stat-label">Next Week Prediction</span><span class="stat-value" id="w-val-prednext">N/A</span></div></div>
                             </div>
                         </div>
                     </div>
@@ -736,403 +627,237 @@
 
             <!-- Data Charts Section -->
             <section id="data-charts" class="tab-content">
-                <div class="data-card">
-                    <div class="card-header">
-                        <i class="fas fa-project-diagram"></i>
-                        <h3>Data Charts</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="placeholder-box">
-                            <div class="placeholder-text">EXAMPLE</div>
-                            <p class="placeholder-desc">Real-time glove sensor data and historical progress charts will be displayed here.</p>
-                        </div>
-                    </div>
-                </div>
+                <div class="data-card"><div class="card-header"><i class="fas fa-project-diagram"></i><h3>Data Charts</h3></div><div class="card-body"><div class="placeholder-box"><p>Real-time glove sensor data will be displayed here.</p></div></div></div>
             </section>
 
             <!-- Summary Report Section -->
             <section id="summary-report" class="tab-content">
-                <div class="data-card">
-                    <div class="card-header">
-                        <i class="fas fa-file-medical-alt"></i>
-                        <h3>Summary Report</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="placeholder-box">
-                            <div class="placeholder-text">EXAMPLE</div>
-                            <p class="placeholder-desc">Automated session summaries and rehabilitation reports will be displayed here.</p>
-                        </div>
-                    </div>
-                </div>
+                <div class="data-card"><div class="card-header"><i class="fas fa-file-medical-alt"></i><h3>Summary Report</h3></div><div class="card-body"><div class="placeholder-box"><p>Automated session summaries will be displayed here.</p></div></div></div>
             </section>
 
             <!-- Direct CSV Data Files Section -->
             <section id="csv-files" class="tab-content">
                 <div class="data-card">
-                    <div class="card-header">
-                        <i class="fas fa-folder-open"></i>
-                        <h3>Direct CSV Data Files</h3>
-                    </div>
+                    <div class="card-header"><i class="fas fa-folder-open"></i><h3>Direct CSV Data Files</h3></div>
                     <div class="card-body">
                         <div class="file-controls">
-                            <label style="font-size: 14px; font-weight: 600; color: #475569;">Find File by Date:</label>
+                            <label>Find File by Date:</label>
                             <input type="date" id="csvSearchDate" class="overview-selector">
-                            <button class="logout-btn" style="width: auto; background: var(--primary-color);" onclick="lookupSpecificCSV()">
-                                <i class="fas fa-search"></i> Look Up
-                            </button>
+                            <button class="logout-btn" style="width: auto; background: var(--primary-color);" onclick="lookupSpecificCSV()"><i class="fas fa-search"></i> Look Up</button>
                         </div>
-
-                        <!-- Data Retention Note -->
-                        <div class="info-note">
-                            <i class="fas fa-info-circle"></i>
-                            <span>Note: Session data is automatically archived. Files are available for direct viewing and download for the last 30 days.</span>
-                        </div>
-
-                        <div id="file-list" class="file-list-container">
-                            <!-- Populated dynamically -->
-                            <div class="placeholder-box" style="padding: 20px; opacity: 0.6;">
-                                <i class="fas fa-spinner fa-spin" style="font-size: 30px; margin-bottom: 10px;"></i>
-                                <p>Scanning for recent session data...</p>
-                            </div>
-                        </div>
-
-                        <!-- Data Viewer -->
+                        <div class="info-note"><i class="fas fa-info-circle"></i><span>Note: Session data archived for last 30 days.</span></div>
+                        <div id="file-list" class="file-list-container"></div>
                         <div id="csv-viewer" class="csv-viewer-container">
-                            <div class="viewer-header">
-                                <h4 id="viewing-filename" style="font-size: 14px; color: #1e293b;">Viewing File</h4>
-                                <button class="logout-btn" style="width: auto; padding: 6px 12px; background: #64748b;" onclick="closeCSVViewer()">
-                                    <i class="fas fa-times"></i> Close
-                                </button>
-                            </div>
-                            <div class="viewer-table-wrapper">
-                                <table id="csv-data-table" class="csv-data-table">
-                                    <!-- Table data -->
-                                </table>
-                            </div>
+                            <div class="viewer-header"><h4 id="viewing-filename">Viewing File</h4><button class="logout-btn" style="width: auto; padding: 6px 12px; background: #64748b;" onclick="closeCSVViewer()"><i class="fas fa-times"></i> Close</button></div>
+                            <div class="viewer-table-wrapper"><table id="csv-data-table" class="csv-data-table"></table></div>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
         
-        <footer class="footer">
-            CeroHeal Rehabilitation Glove System &copy; 2026. Developed by Tristan Chew Zun Yan - FYP in Mechatronics Engineering, ViTrox College.
-        </footer>
+        <footer class="footer">CeroHeal Rehabilitation Glove System &copy; 2026. Developed by Tristan Chew Zun Yan - FYP in Mechatronics Engineering, ViTrox College.</footer>
     </main>
 
     <script>
-        // Section Switching Logic
+        let lastSundayDate = null;
+        let lastSaturdayDate = null;
+        let globalYesterdayDate = null;
+
         function openSection(evt, sectionId) {
-            var i, tabContent, navItems;
-            tabContent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabContent.length; i++) {
-                tabContent[i].classList.remove("active");
-            }
-            navItems = document.getElementsByClassName("nav-item");
-            for (i = 0; i < navItems.length; i++) {
-                navItems[i].classList.remove("active");
-            }
+            document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+            document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
             document.getElementById(sectionId).classList.add("active");
             evt.currentTarget.classList.add("active");
-
-            // Toggle visibility of top bar controls based on section
-            const controls = document.getElementById('top-bar-controls');
-            if (sectionId === 'patient-overview') {
-                controls.style.display = 'block';
-            } else {
-                controls.style.display = 'none';
-            }
-
-            const titles = {
-                'patient-overview': 'Patient Overview Section',
-                'data-charts': 'Data Charts & Analytics',
-                'summary-report': 'Medical Summary Reports',
-                'csv-files': 'CSV File Management'
-            };
-            document.getElementById('section-subtitle').innerText = titles[sectionId];
-
-            if (sectionId === 'csv-files') {
-                scanRecentCSVFiles();
-            }
+            document.getElementById('top-bar-controls').style.display = (sectionId === 'patient-overview') ? 'block' : 'none';
+            if (sectionId === 'csv-files') scanRecentCSVFiles();
         }
 
-        // Overview Toggling Logic
         function toggleOverview(view) {
-            const daily = document.getElementById('daily-view');
-            const weekly = document.getElementById('weekly-view');
-            
-            if (view === 'daily') {
-                daily.classList.add('active');
-                weekly.classList.remove('active');
-            } else {
-                daily.classList.remove('active');
-                weekly.classList.add('active');
-            }
+            document.getElementById('daily-view').classList.toggle('active', view === 'daily');
+            document.getElementById('weekly-view').classList.toggle('active', view === 'weekly');
         }
 
-        // Logout logic
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('isLoggedIn');
-                sessionStorage.removeItem('isLoggedIn');
-                window.location.href = 'login.html';
-            }
-        });
-
-        /**
-         * Dynamic Date Calculation Logic
-         * Malaysia Time (UTC+8)
-         */
-        let globalYesterdayDate = null; 
+        document.getElementById('logoutBtn').addEventListener('click', () => { if(confirm('Logout?')){ localStorage.removeItem('isLoggedIn'); sessionStorage.removeItem('isLoggedIn'); window.location.href='login.html'; }});
 
         function updateHeaderDates() {
             const malaysiaStr = new Date().toLocaleString("en-US", {timeZone: "Asia/Kuala_Lumpur"});
             const malaysiaDate = new Date(malaysiaStr);
+            const formatDate = (date) => `${date.getDate()} ${date.toLocaleString('en-GB', { month: 'short' })} ${date.getFullYear()}`;
             
-            const formatDate = (date) => {
-                const day = date.getDate();
-                const month = date.toLocaleString('en-GB', { month: 'short' });
-                const year = date.getFullYear();
-                return `${day} ${month} ${year}`;
-            };
-
             const yesterday = new Date(malaysiaDate);
             yesterday.setDate(malaysiaDate.getDate() - 1);
             globalYesterdayDate = yesterday;
             document.getElementById('dailyDateLabel').innerText = formatDate(yesterday);
 
-            const currentDayOfWeek = malaysiaDate.getDay(); 
-            const lastSaturday = new Date(malaysiaDate);
-            lastSaturday.setDate(malaysiaDate.getDate() - (currentDayOfWeek + 1));
-            const lastSunday = new Date(lastSaturday);
-            lastSunday.setDate(lastSaturday.getDate() - 6);
-
-            document.getElementById('weeklyDateLabel').innerText = 
-                `${formatDate(lastSunday)} - ${formatDate(lastSaturday)}`;
+            const dayOfWeek = malaysiaDate.getDay(); 
+            const sat = new Date(malaysiaDate);
+            sat.setDate(malaysiaDate.getDate() - (dayOfWeek + 1));
+            const sun = new Date(sat);
+            sun.setDate(sat.getDate() - 6);
+            
+            lastSundayDate = sun;
+            lastSaturdayDate = sat;
+            document.getElementById('weeklyDateLabel').innerText = `${formatDate(sun)} - ${formatDate(sat)}`;
         }
 
-        /**
-         * CSV Data Fetching & Processing Logic
-         */
         async function fetchDailyCSV() {
             if (!globalYesterdayDate) return;
-
             const yyyy = globalYesterdayDate.getFullYear();
             const mm = String(globalYesterdayDate.getMonth() + 1).padStart(2, '0');
             const dd = String(globalYesterdayDate.getDate()).padStart(2, '0');
-            const fileName = `${yyyy}${mm}${dd}_DATA.csv`;
-            const filePath = `./DATA/${fileName}`;
-
+            const url = `./DATA/${yyyy}${mm}${dd}_DATA.csv`;
             try {
-                const response = await fetch(filePath);
-                if (!response.ok) {
-                    displayNA();
-                    return;
-                }
-                const csvText = await response.text();
-                processCSVForStats(csvText);
-            } catch (error) {
-                displayNA();
-            }
+                const res = await fetch(url);
+                if (!res.ok) { displayNA(); return; }
+                const csv = await res.text();
+                processDailyCSV(csv);
+            } catch { displayNA(); }
         }
 
-        function processCSVForStats(text) {
-            const lines = text.trim().split('\n');
+        function processDailyCSV(text) {
+            const lines = text.trim().split('\n').filter(l => l.trim() !== '');
             if (lines.length < 2) { displayNA(); return; }
-            const hasHeader = lines[0].toLowerCase().includes('time');
-            const dataLines = hasHeader ? lines.slice(1) : lines;
-            if (dataLines.length === 0) { displayNA(); return; }
-
-            let totalCount = 0;
-            let sumDuration = 0;
-            let sumRecIndex = 0;
-            let sumRecImprove = 0;
-            let sumPredTmr = 0;
-            let validPredCount = 0;
-            let lastMode = 'N/A';
-
-            dataLines.forEach((line) => {
-                const columns = line.split(',').map(c => c.trim());
-                if (columns.length < 11) return;
-                if (columns[1]) lastMode = columns[1].charAt(0).toUpperCase() + columns[1].slice(1);
-                totalCount += parseFloat(columns[2]) || 1;
-                sumDuration += parseFloat(columns[3]) || 0;
-                sumRecIndex += parseFloat(columns[8]) || 0;
-                const impRaw = columns[9].replace('+', '');
-                sumRecImprove += parseFloat(impRaw) || 0;
-                const predVal = columns[10];
-                if (predVal && predVal.toUpperCase() !== 'N/A') {
-                    sumPredTmr += parseFloat(predVal) || 0;
-                    validPredCount++;
-                }
+            const data = lines.slice(1);
+            let lastRow = data[data.length-1].split(',').map(s => s.trim());
+            
+            let sumDur = 0, sumRec = 0, sumImp = 0, sumPred = 0, predCount = 0;
+            data.forEach(line => {
+                const cols = line.split(',').map(s => s.trim());
+                sumDur += parseFloat(cols[3]) || 0;
+                sumRec += parseFloat(cols[8]) || 0;
+                sumImp += parseFloat(cols[9]) || 0;
+                if (cols[10] && cols[10].toUpperCase() !== 'N/A') { sumPred += parseFloat(cols[10]); predCount++; }
             });
 
-            const rowCount = dataLines.length;
-            document.getElementById('val-mode').innerText = lastMode;
-            document.getElementById('val-sessions').innerText = `${rowCount}/3`;
-            document.getElementById('val-duration').innerText = `${(sumDuration / rowCount).toFixed(1)} min`;
-            document.getElementById('val-recindex').innerText = `${(sumRecIndex / rowCount).toFixed(2)}%`;
-            const avgImprove = (sumRecImprove / rowCount).toFixed(2);
-            document.getElementById('val-recimprove').innerText = `${avgImprove > 0 ? '+' : ''}${avgImprove}%`;
-            if (validPredCount > 0) {
-                document.getElementById('val-predtmr').innerText = `${(sumPredTmr / validPredCount).toFixed(2)}%`;
-            } else {
-                document.getElementById('val-predtmr').innerText = 'N/A';
-            }
+            document.getElementById('val-mode').innerText = lastRow[1].charAt(0).toUpperCase() + lastRow[1].slice(1);
+            document.getElementById('val-sessions').innerText = `${data.length}/3`;
+            document.getElementById('val-duration').innerText = `${(sumDur/data.length).toFixed(1)} min`;
+            document.getElementById('val-recindex').innerText = `${(sumRec/data.length).toFixed(2)}%`;
+            document.getElementById('val-recimprove').innerText = `${sumImp/data.length >= 0 ? '+' : ''}${(sumImp/data.length).toFixed(2)}%`;
+            document.getElementById('val-predtmr').innerText = predCount > 0 ? `${(sumPred/predCount).toFixed(2)}%` : 'N/A';
         }
 
         function displayNA() {
-            document.getElementById('val-mode').innerText = 'N/A';
-            document.getElementById('val-sessions').innerText = '0/3';
-            document.getElementById('val-duration').innerText = 'N/A';
-            document.getElementById('val-recindex').innerText = 'N/A';
-            document.getElementById('val-recimprove').innerText = 'N/A';
-            document.getElementById('val-predtmr').innerText = 'N/A';
+            ['val-mode','val-sessions','val-duration','val-recindex','val-recimprove','val-predtmr'].forEach(id => document.getElementById(id).innerText = (id==='val-sessions'?'0/3':'N/A'));
         }
 
-        /**
-         * CSV Browser Specific Logic
-         */
-        async function scanRecentCSVFiles() {
-            const listEl = document.getElementById('file-list');
-            listEl.innerHTML = '';
+        async function fetchWeeklyCSV() {
+            if (!lastSundayDate) return;
+            const dates = [];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(lastSundayDate);
+                d.setDate(lastSundayDate.getDate() + i);
+                dates.push(d);
+            }
+
+            let totalSessions = 0;
+            let sumDuration = 0;
+            let rowCountForDuration = 0;
+            let weeklyImprovementSum = 0;
             
-            const malaysiaStr = new Date().toLocaleString("en-US", {timeZone: "Asia/Kuala_Lumpur"});
-            const today = new Date(malaysiaStr);
-            
-            let filesFound = 0;
-            // Scan last 30 days
-            for (let i = 0; i < 30; i++) {
-                const date = new Date(today);
-                date.setDate(today.getDate() - i);
+            let latestFileContent = null;
+            let latestFileDate = null;
+
+            for (const date of dates) {
                 const yyyy = date.getFullYear();
                 const mm = String(date.getMonth() + 1).padStart(2, '0');
                 const dd = String(date.getDate()).padStart(2, '0');
-                const fileName = `${yyyy}${mm}${dd}_DATA.csv`;
-                const exists = await checkFileExists(`./DATA/${fileName}`);
-                
-                if (exists) {
-                    filesFound++;
-                    addFileCard(fileName, date);
+                const url = `./DATA/${yyyy}${mm}${dd}_DATA.csv`;
+                try {
+                    const res = await fetch(url);
+                    if (res.ok) {
+                        const csv = await res.text();
+                        const lines = csv.trim().split('\n').filter(l => l.trim() !== '').slice(1);
+                        if (lines.length > 0) {
+                            totalSessions += lines.length;
+                            latestFileContent = lines;
+                            latestFileDate = date;
+                            
+                            let dailyImpSum = 0;
+                            lines.forEach(line => {
+                                const cols = line.split(',').map(s => s.trim());
+                                sumDuration += parseFloat(cols[3]) || 0;
+                                dailyImpSum += parseFloat(cols[9]) || 0;
+                                rowCountForDuration++;
+                            });
+                            weeklyImprovementSum += (dailyImpSum / lines.length);
+                        }
+                    }
+                } catch {}
+            }
+
+            if (!latestFileContent) { displayWeeklyNA(); return; }
+
+            // Mode, RecIndex, PredWeek from latest file available
+            let lastRow = latestFileContent[latestFileContent.length-1].split(',').map(s => s.trim());
+            let sumRec = 0, sumPredWeek = 0, predWCount = 0;
+            latestFileContent.forEach(line => {
+                const cols = line.split(',').map(s => s.trim());
+                sumRec += parseFloat(cols[8]) || 0;
+                if (cols[16] && cols[16].toUpperCase() !== 'N/A') { sumPredWeek += parseFloat(cols[16]); predWCount++; }
+            });
+
+            document.getElementById('w-val-mode').innerText = lastRow[1].charAt(0).toUpperCase() + lastRow[1].slice(1);
+            document.getElementById('w-val-sessions').innerText = `${totalSessions}/21`;
+            document.getElementById('w-val-duration').innerText = rowCountForDuration > 0 ? `${(sumDuration/rowCountForDuration).toFixed(1)} min` : 'N/A';
+            document.getElementById('w-val-recindex').innerText = `${(sumRec/latestFileContent.length).toFixed(2)}%`;
+            document.getElementById('w-val-recimprove').innerText = `${weeklyImprovementSum >= 0 ? '+' : ''}${weeklyImprovementSum.toFixed(2)}%`;
+            document.getElementById('w-val-prednext').innerText = predWCount > 0 ? `${(sumPredWeek/predWCount).toFixed(2)}%` : 'N/A';
+        }
+
+        function displayWeeklyNA() {
+            ['w-val-mode','w-val-sessions','w-val-duration','w-val-recindex','w-val-recimprove','w-val-prednext'].forEach(id => document.getElementById(id).innerText = (id==='w-val-sessions'?'0/21':'N/A'));
+        }
+
+        async function scanRecentCSVFiles() {
+            const listEl = document.getElementById('file-list');
+            listEl.innerHTML = '';
+            const today = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kuala_Lumpur"}));
+            let found = 0;
+            for (let i = 0; i < 30; i++) {
+                const d = new Date(today); d.setDate(today.getDate() - i);
+                const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), dd = String(d.getDate()).padStart(2,'0');
+                const name = `${y}${m}${dd}_DATA.csv`;
+                if (await checkFileExists(`./DATA/${name}`)) {
+                    found++; addFileCard(name, d);
                 }
             }
-
-            if (filesFound === 0) {
-                listEl.innerHTML = `
-                    <div class="placeholder-box" style="padding: 40px; border: 1px dashed #e2e8f0; border-radius: 12px; grid-column: 1/-1;">
-                        <i class="fas fa-file-excel" style="font-size: 40px; color: #e2e8f0; margin-bottom: 15px;"></i>
-                        <p style="color: #94a3b8;">No session CSV files found in the /DATA folder from the last 30 days.</p>
-                    </div>`;
-            }
+            if (!found) listEl.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#94a3b8;padding:40px;">No files found from the last 30 days.</p>';
         }
 
-        async function checkFileExists(url) {
-            try {
-                const response = await fetch(url, { method: 'HEAD' });
-                return response.ok;
-            } catch {
-                return false;
-            }
-        }
+        async function checkFileExists(url) { try { const r = await fetch(url, {method:'HEAD'}); return r.ok; } catch { return false; } }
 
-        function addFileCard(fileName, date) {
-            const listEl = document.getElementById('file-list');
-            const dateStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-            
-            const card = document.createElement('div');
-            card.className = 'csv-file-card';
-            card.innerHTML = `
-                <div class="file-info">
-                    <div class="file-icon"><i class="fas fa-file-csv"></i></div>
-                    <div class="file-details">
-                        <h4>${fileName}</h4>
-                        <p>${dateStr}</p>
-                    </div>
-                </div>
-                <div class="file-actions">
-                    <button class="action-btn view-btn" onclick="viewCSV('${fileName}')">
-                        <i class="fas fa-eye"></i> View
-                    </button>
-                    <a href="./DATA/${fileName}" download="${fileName}" class="action-btn dl-btn" style="text-decoration: none;">
-                        <i class="fas fa-download"></i> Download
-                    </a>
-                </div>
-            `;
-            listEl.appendChild(card);
+        function addFileCard(name, d) {
+            const card = document.createElement('div'); card.className = 'csv-file-card';
+            card.innerHTML = `<div class="file-info"><div class="file-icon-csv"><i class="fas fa-file-csv"></i></div><div><h4>${name}</h4><p>${d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</p></div></div><div class="file-actions"><button class="action-btn view-btn" onclick="viewCSV('${name}')"><i class="fas fa-eye"></i> View</button><a href="./DATA/${name}" download="${name}" class="action-btn dl-btn" style="text-decoration:none;"><i class="fas fa-download"></i> Download</a></div>`;
+            document.getElementById('file-list').appendChild(card);
         }
 
         async function lookupSpecificCSV() {
-            const searchDateInput = document.getElementById('csvSearchDate');
-            if (!searchDateInput.value) {
-                alert('Please select a date.');
-                return;
-            }
-            
-            const dateParts = searchDateInput.value.split('-'); // YYYY-MM-DD
-            const fileName = `${dateParts[0]}${dateParts[1]}${dateParts[2]}_DATA.csv`;
-            const filePath = `./DATA/${fileName}`;
-            
-            const exists = await checkFileExists(filePath);
-            if (exists) {
-                const dateObj = new Date(searchDateInput.value);
-                // Clear and just show this one or highlight it
-                document.getElementById('file-list').innerHTML = '';
-                addFileCard(fileName, dateObj);
-            } else {
-                alert(`No data found for ${searchDateInput.value}. Expected file: ${fileName}`);
-            }
+            const val = document.getElementById('csvSearchDate').value; if(!val){alert('Select date');return;}
+            const p = val.split('-'); const name = `${p[0]}${p[1]}${p[2]}_DATA.csv`;
+            if (await checkFileExists(`./DATA/${name}`)) { document.getElementById('file-list').innerHTML = ''; addFileCard(name, new Date(val)); } else alert('File not found');
         }
 
-        async function viewCSV(fileName) {
-            const viewer = document.getElementById('csv-viewer');
-            const table = document.getElementById('csv-data-table');
-            const filenameLabel = document.getElementById('viewing-filename');
-            
-            filenameLabel.innerText = `Viewing: ${fileName}`;
-            viewer.style.display = 'block';
-            table.innerHTML = '<tr><td style="text-align:center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Loading data...</td></tr>';
-            
+        async function viewCSV(name) {
+            const v = document.getElementById('csv-viewer'), t = document.getElementById('csv-data-table');
+            document.getElementById('viewing-filename').innerText = `Viewing: ${name}`; v.style.display = 'block';
+            t.innerHTML = '<tr><td>Loading...</td></tr>';
             try {
-                const response = await fetch(`./DATA/${fileName}`);
-                const text = await response.text();
-                const lines = text.trim().split('\n');
-                
-                if (lines.length === 0) {
-                    table.innerHTML = '<tr><td>File is empty.</td></tr>';
-                    return;
-                }
-                
-                let tableHtml = '';
-                lines.forEach((line, index) => {
-                    const columns = line.split(',');
-                    const tag = index === 0 ? 'th' : 'td';
-                    tableHtml += '<tr>';
-                    columns.forEach(col => {
-                        tableHtml += `<${tag}>${col.trim()}</${tag}>`;
-                    });
-                    tableHtml += '</tr>';
-                });
-                table.innerHTML = tableHtml;
-                
-                // Scroll into view
-                viewer.scrollIntoView({ behavior: 'smooth' });
-            } catch (error) {
-                table.innerHTML = '<tr><td style="color:red;">Error loading file content.</td></tr>';
-            }
+                const r = await fetch(`./DATA/${name}`); const csv = await r.text();
+                const lines = csv.trim().split('\n'); t.innerHTML = lines.map((l, i) => `<tr>${l.split(',').map(c => `<${i===0?'th':'td'}>${c.trim()}</${i===0?'th':'td'}>`).join('')}</tr>`).join('');
+                v.scrollIntoView({behavior:'smooth'});
+            } catch { t.innerHTML = '<tr><td>Error</td></tr>'; }
         }
 
-        function closeCSVViewer() {
-            document.getElementById('csv-viewer').style.display = 'none';
-        }
+        function closeCSVViewer() { document.getElementById('csv-viewer').style.display = 'none'; }
 
-        // Run on load
         document.addEventListener('DOMContentLoaded', async () => {
             updateHeaderDates();
             await fetchDailyCSV();
-            setInterval(async () => {
-                updateHeaderDates();
-                await fetchDailyCSV();
-            }, 60000);
+            await fetchWeeklyCSV();
+            setInterval(async () => { updateHeaderDates(); await fetchDailyCSV(); await fetchWeeklyCSV(); }, 60000);
         });
     </script>
 </body>
