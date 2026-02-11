@@ -284,12 +284,31 @@
         .file-controls {
             display: flex;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             align-items: center;
             background: #f8fafc;
             padding: 20px;
             border-radius: 12px;
             border: 1px dashed #cbd5e1;
+        }
+
+        .info-note {
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .info-note i {
+            font-size: 18px;
+            color: #0ea5e9;
         }
 
         .file-list-container {
@@ -763,6 +782,12 @@
                             </button>
                         </div>
 
+                        <!-- Data Retention Note -->
+                        <div class="info-note">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Note: Session data is automatically archived. Files are available for direct viewing and download for the last 30 days.</span>
+                        </div>
+
                         <div id="file-list" class="file-list-container">
                             <!-- Populated dynamically -->
                             <div class="placeholder-box" style="padding: 20px; opacity: 0.6;">
@@ -976,8 +1001,8 @@
             const today = new Date(malaysiaStr);
             
             let filesFound = 0;
-            // Scan last 7 days
-            for (let i = 0; i < 7; i++) {
+            // Scan last 30 days
+            for (let i = 0; i < 30; i++) {
                 const date = new Date(today);
                 date.setDate(today.getDate() - i);
                 const yyyy = date.getFullYear();
@@ -996,7 +1021,7 @@
                 listEl.innerHTML = `
                     <div class="placeholder-box" style="padding: 40px; border: 1px dashed #e2e8f0; border-radius: 12px; grid-column: 1/-1;">
                         <i class="fas fa-file-excel" style="font-size: 40px; color: #e2e8f0; margin-bottom: 15px;"></i>
-                        <p style="color: #94a3b8;">No recent CSV files found in the /DATA folder.</p>
+                        <p style="color: #94a3b8;">No session CSV files found in the /DATA folder from the last 30 days.</p>
                     </div>`;
             }
         }
