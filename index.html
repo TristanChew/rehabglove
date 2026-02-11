@@ -593,11 +593,17 @@
                         </div>
                         <div class="card-body">
                             <div class="stats-grid">
+                                <!-- Mode (Daily) -->
                                 <div class="stat-box"><div class="stat-icon icon-purple"><i class="fas fa-robot"></i></div><div class="stat-info"><span class="stat-label">Current Mode</span><span class="stat-value" id="val-mode">N/A</span></div></div>
-                                <div class="stat-box"><div class="stat-icon icon-blue"><i class="fas fa-check-double"></i></div><div class="stat-info"><span class="stat-label">Sessions Completed</span><span class="stat-value" id="val-sessions">0/3</span></div></div>
-                                <div class="stat-box"><div class="stat-icon icon-orange"><i class="fas fa-clock"></i></div><div class="stat-info"><span class="stat-label">Avg Session Duration</span><span class="stat-value" id="val-duration">N/A</span></div></div>
-                                <div class="stat-box"><div class="stat-icon icon-teal"><i class="fas fa-heartbeat"></i></div><div class="stat-info"><span class="stat-label">Current Recovery Index</span><span class="stat-value" id="val-recindex">N/A</span></div></div>
-                                <div class="stat-box"><div class="stat-icon icon-green"><i class="fas fa-chart-line"></i></div><div class="stat-info"><span class="stat-label">Recovery Improvement</span><span class="stat-value" id="val-recimprove">N/A</span></div></div>
+                                <!-- Sessions (Daily - Matches Weekly Icon) -->
+                                <div class="stat-box"><div class="stat-icon icon-blue"><i class="fas fa-tasks"></i></div><div class="stat-info"><span class="stat-label">Sessions Completed</span><span class="stat-value" id="val-sessions">0/3</span></div></div>
+                                <!-- Duration (Daily - Matches Weekly Icon) -->
+                                <div class="stat-box"><div class="stat-icon icon-orange"><i class="fas fa-stopwatch"></i></div><div class="stat-info"><span class="stat-label">Avg Session Duration</span><span class="stat-value" id="val-duration">N/A</span></div></div>
+                                <!-- Recovery Index (Daily - Matches Weekly Icon) -->
+                                <div class="stat-box"><div class="stat-icon icon-teal"><i class="fas fa-chart-bar"></i></div><div class="stat-info"><span class="stat-label">Current Recovery Index</span><span class="stat-value" id="val-recindex">N/A</span></div></div>
+                                <!-- Improvement (Daily - Matches Weekly Icon) -->
+                                <div class="stat-box"><div class="stat-icon icon-green"><i class="fas fa-level-up-alt"></i></div><div class="stat-info"><span class="stat-label">Recovery Improvement</span><span class="stat-value" id="val-recimprove">N/A</span></div></div>
+                                <!-- Prediction (Daily - Uses Daily Specific Icon) -->
                                 <div class="stat-box"><div class="stat-icon icon-red"><i class="fas fa-forward"></i></div><div class="stat-info"><span class="stat-label">Prediction (Tomorrow)</span><span class="stat-value" id="val-predtmr">N/A</span></div></div>
                             </div>
                         </div>
@@ -716,13 +722,13 @@
         }
 
         function processDailyCSV(text) {
-            const lines = text.trim().split('\n').filter(l => l.trim() !== '');
-            if (lines.length < 2) { displayNA(); return; }
-            const data = lines.slice(1);
-            let lastRow = data[data.length-1].split(',').map(s => s.trim());
+            const lines = text.trim().split('\n').filter(l => l.trim() !== '').slice(1);
+            if (lines.length === 0) { displayNA(); return; }
+            
+            let lastRow = lines[lines.length-1].split(',').map(s => s.trim());
             
             let sumDur = 0, sumRec = 0, sumImp = 0, sumPred = 0, predCount = 0;
-            data.forEach(line => {
+            lines.forEach(line => {
                 const cols = line.split(',').map(s => s.trim());
                 sumDur += parseFloat(cols[3]) || 0;
                 sumRec += parseFloat(cols[8]) || 0;
@@ -731,10 +737,10 @@
             });
 
             document.getElementById('val-mode').innerText = lastRow[1].charAt(0).toUpperCase() + lastRow[1].slice(1);
-            document.getElementById('val-sessions').innerText = `${data.length}/3`;
-            document.getElementById('val-duration').innerText = `${(sumDur/data.length).toFixed(1)} min`;
-            document.getElementById('val-recindex').innerText = `${(sumRec/data.length).toFixed(2)}%`;
-            document.getElementById('val-recimprove').innerText = `${sumImp/data.length >= 0 ? '+' : ''}${(sumImp/data.length).toFixed(2)}%`;
+            document.getElementById('val-sessions').innerText = `${lines.length}/3`;
+            document.getElementById('val-duration').innerText = `${(sumDur/lines.length).toFixed(1)} min`;
+            document.getElementById('val-recindex').innerText = `${(sumRec/lines.length).toFixed(2)}%`;
+            document.getElementById('val-recimprove').innerText = `${sumImp/lines.length >= 0 ? '+' : ''}${(sumImp/lines.length).toFixed(2)}%`;
             document.getElementById('val-predtmr').innerText = predCount > 0 ? `${(sumPred/predCount).toFixed(2)}%` : 'N/A';
         }
 
