@@ -533,6 +533,7 @@
             .file-controls { flex-direction: column; align-items: stretch; }
         }
     </style>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body>
     <nav class="sidebar">
@@ -578,6 +579,13 @@
                 <select class="overview-selector" id="viewSelector" onchange="toggleOverview(this.value)">
                     <option value="daily">Daily Statistics</option>
                     <option value="weekly">Weekly Performance</option>
+                </select>
+            </div>
+            <div id="chart-controls" style="display: none;">
+                <select class="overview-selector" id="chartSelector" onchange="updateChartType(this.value)">
+                    <option value="left-speed">Left Hand Speed</option>
+                    <option value="right-speed">Right Hand Speed</option>
+                    <option value="recovery-index">Recovery Index</option>
                 </select>
             </div>
         </div>
@@ -676,8 +684,35 @@
             document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
             document.getElementById(sectionId).classList.add("active");
             evt.currentTarget.classList.add("active");
+            
+            // Update top bar controls visibility
             document.getElementById('top-bar-controls').style.display = (sectionId === 'patient-overview') ? 'block' : 'none';
+            document.getElementById('chart-controls').style.display = (sectionId === 'data-charts') ? 'block' : 'none';
+            
+            // Update section subtitle
+            const subtitles = {
+                'patient-overview': 'Patient Overview Section',
+                'data-charts': 'Data Charts Section',
+                'summary-report': 'Summary Report Section',
+                'csv-files': 'Direct CSV Data Files Section'
+            };
+            document.getElementById('section-subtitle').innerText = subtitles[sectionId] || '';
+
             if (sectionId === 'csv-files') scanRecentCSVFiles();
+        }
+
+        function updateChartType(type) {
+            console.log("Chart type changed to:", type);
+            // Placeholder for future chart update logic
+            const chartPlaceholder = document.querySelector('#data-charts .placeholder-box p');
+            if (chartPlaceholder) {
+                const labels = {
+                    'left-speed': 'Left Hand Speed',
+                    'right-speed': 'Right Hand Speed',
+                    'recovery-index': 'Recovery Index'
+                };
+                chartPlaceholder.innerText = `Real-time ${labels[type]} data will be displayed here.`;
+            }
         }
 
         function toggleOverview(view) {
@@ -867,5 +902,6 @@
             setInterval(async () => { updateHeaderDates(); await fetchDailyCSV(); await fetchWeeklyCSV(); }, 60000);
         });
     </script>
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>
