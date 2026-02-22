@@ -12,6 +12,7 @@
         }
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -642,7 +643,15 @@
 
             <!-- Data Charts Section -->
             <section id="data-charts" class="tab-content">
-                <div class="data-card"><div class="card-header"><i class="fas fa-project-diagram"></i><h3>Data Charts</h3></div><div class="card-body"><div class="placeholder-box"><p>Real-time glove sensor data will be displayed here.</p></div></div></div>
+                <div class="data-card">
+                    <div class="card-header">
+                        <i class="fas fa-project-diagram"></i>
+                        <h3>Data Charts</h3>
+                    </div>
+                    <div class="card-body" style="padding: 20px; position: relative; height: 450px;">
+                        <canvas id="rehabChart"></canvas>
+                    </div>
+                </div>
             </section>
 
             <!-- Summary Report Section -->
@@ -699,20 +708,227 @@
             document.getElementById('section-subtitle').innerText = subtitles[sectionId] || '';
 
             if (sectionId === 'csv-files') scanRecentCSVFiles();
+            if (sectionId === 'data-charts') loadChartData();
+        }
+
+        let myChart = null;
+        let globalChartData = {
+            labels: [],
+            leftSpeed: [],
+            rightSpeed: [],
+            recoveryIndex: [],
+            predValues: []
+        };
+
+        async function loadChartData() {
+            const malaysiaStr = new Date().toLocaleString("en-US", {timeZone: "Asia/Kuala_Lumpur"});
+            const malaysiaDate = new Date(malaysiaStr);
+            
+            const labels = [];
+            const leftSpeed = [];
+            const rightSpeed = [];
+            const recoveryIndex = [];
+            
+            let latestPreds = null;
+            let latestDate = null;
+
+            // Fetch last 30 days
+            for (let i = 29; i >= 0; i--) {
+                const d = new Date(malaysiaDate);
+                d.setDate(malaysiaDate.getDate() - i);
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                const dateLabel = `${d.getDate()}/${d.getMonth() + 1}`;
+                labels.push(dateLabel);
+                
+                const url = `./DATA/${yyyy}${mm}${dd}_DATA.csv`;
+                try {
+                    const res = await fetch(url);
+                    if (res.ok) {
+                        const csv = await res.text();
+                        const lines = csv.trim().split('\n').filter(l => l.trim() !== '').slice(1);
+                        if (lines.length > 0) {
+                            let sumLeft = 0, sumRight = 0, sumRec = 0;
+                            lines.forEach(line => {
+                                const cols = line.split(',').map(s => s.trim());
+                                sumLeft += parseFloat(cols[4]) || 0; // leftpk
+                                sumRight += parseFloat(cols[5]) || 0; // rightpk
+                                sumRec += parseFloat(cols[8]) || 0; // recindex
+                            });
+                            leftSpeed.push(sumLeft / lines.length);
+                            rightSpeed.push(sumRight / lines.length);
+                            recoveryIndex.push(sumRec / lines.length);
+                            
+                            // Extract predictions from the latest available file
+                            const lastRow = lines[lines.length - 1].split(',').map(s => s.trim());
+                            latestPreds = [
+                                parseFloat(lastRow[10]), // predtmr
+                                parseFloat(lastRow[11]), // pred2
+                                parseFloat(lastRow[12]), // pred3
+                                parseFloat(lastRow[13]), // pred4
+                                parseFloat(lastRow[14]), // pred5
+                                parseFloat(lastRow[15]), // pred6
+                                parseFloat(lastRow[16])  // predweek
+                            ];
+                            latestDate = new Date(d);
+                        } else {
+                            leftSpeed.push(null);
+                            rightSpeed.push(null);
+                            recoveryIndex.push(null);
+                        }
+                    } else {
+                        leftSpeed.push(null);
+                        rightSpeed.push(null);
+                        recoveryIndex.push(null);
+                    }
+                } catch {
+                    leftSpeed.push(null);
+                    rightSpeed.push(null);
+                    recoveryIndex.push(null);
+                }
+            }
+
+            // Prepare prediction values
+            let predValues = [];
+            if (latestPreds && latestDate) {
+                // Find the index of the latest date in labels (which currently has 30 items)
+                const lastDataIdx = labels.length - 1;
+                
+                // Add 7 more days for prediction
+                for (let i = 1; i <= 7; i++) {
+                    const d = new Date(latestDate);
+                    d.setDate(latestDate.getDate() + i);
+                    labels.push(`${d.getDate()}/${d.getMonth() + 1}`);
+                    leftSpeed.push(null);
+                    rightSpeed.push(null);
+                    recoveryIndex.push(null);
+                }
+                
+                // Initialize predValues with nulls for the new total length
+                predValues = new Array(labels.length).fill(null);
+                
+                // Start prediction line from the last actual data point
+                predValues[lastDataIdx] = recoveryIndex[lastDataIdx];
+                for (let i = 0; i < 7; i++) {
+                    predValues[lastDataIdx + 1 + i] = latestPreds[i];
+                }
+            } else {
+                predValues = new Array(labels.length).fill(null);
+            }
+
+            globalChartData = { labels, leftSpeed, rightSpeed, recoveryIndex, predValues };
+            updateChartType(document.getElementById('chartSelector').value);
         }
 
         function updateChartType(type) {
-            console.log("Chart type changed to:", type);
-            // Placeholder for future chart update logic
-            const chartPlaceholder = document.querySelector('#data-charts .placeholder-box p');
-            if (chartPlaceholder) {
-                const labels = {
-                    'left-speed': 'Left Hand Speed',
-                    'right-speed': 'Right Hand Speed',
-                    'recovery-index': 'Recovery Index'
-                };
-                chartPlaceholder.innerText = `Real-time ${labels[type]} data will be displayed here.`;
+            const ctx = document.getElementById('rehabChart').getContext('2d');
+            
+            if (myChart) {
+                myChart.destroy();
             }
+
+            let dataset = [];
+            let yAxisLabel = '';
+            let yMax = 100;
+
+            if (type === 'left-speed') {
+                yAxisLabel = 'Speed (cm/s)';
+                dataset = [{
+                    label: 'Left Hand Speed',
+                    data: globalChartData.leftSpeed,
+                    borderColor: '#2563eb',
+                    backgroundColor: '#2563eb',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: false,
+                    tension: 0.1,
+                    spanGaps: true
+                }];
+            } else if (type === 'right-speed') {
+                yAxisLabel = 'Speed (cm/s)';
+                dataset = [{
+                    label: 'Right Hand Speed',
+                    data: globalChartData.rightSpeed,
+                    borderColor: '#7c3aed',
+                    backgroundColor: '#7c3aed',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: false,
+                    tension: 0.1,
+                    spanGaps: true
+                }];
+            } else if (type === 'recovery-index') {
+                yAxisLabel = 'Recovery Index (%)';
+                dataset = [
+                    {
+                        label: 'Recovery Index',
+                        data: globalChartData.recoveryIndex,
+                        borderColor: '#0d9488',
+                        backgroundColor: '#0d9488',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: false,
+                        tension: 0.1,
+                        spanGaps: true
+                    },
+                    {
+                        label: "Next Week's Prediction",
+                        data: globalChartData.predValues,
+                        borderColor: '#16a34a',
+                        backgroundColor: '#16a34a',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: false,
+                        tension: 0.1,
+                        spanGaps: true
+                    }
+                ];
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: globalChartData.labels,
+                    datasets: dataset
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: yMax,
+                            title: {
+                                display: true,
+                                text: yAxisLabel,
+                                font: { weight: 'bold' }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date',
+                                font: { weight: 'bold' }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    }
+                }
+            });
         }
 
         function toggleOverview(view) {
