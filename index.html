@@ -731,6 +731,7 @@
             
             let latestPreds = null;
             let latestDate = null;
+            let latestDataIdx = -1;
 
             // Fetch last 30 days
             for (let i = 29; i >= 0; i--) {
@@ -762,16 +763,22 @@
                             
                             // Extract predictions from the latest available file
                             const lastRow = lines[lines.length - 1].split(',').map(s => s.trim());
+                            const parsePred = (val) => {
+                                if (!val || val.toUpperCase() === 'N/A') return null;
+                                const n = parseFloat(val);
+                                return isNaN(n) ? null : n;
+                            };
                             latestPreds = [
-                                parseFloat(lastRow[10]), // predtmr
-                                parseFloat(lastRow[11]), // pred2
-                                parseFloat(lastRow[12]), // pred3
-                                parseFloat(lastRow[13]), // pred4
-                                parseFloat(lastRow[14]), // pred5
-                                parseFloat(lastRow[15]), // pred6
-                                parseFloat(lastRow[16])  // predweek
+                                parsePred(lastRow[10]), // predtmr
+                                parsePred(lastRow[11]), // pred2
+                                parsePred(lastRow[12]), // pred3
+                                parsePred(lastRow[13]), // pred4
+                                parsePred(lastRow[14]), // pred5
+                                parsePred(lastRow[15]), // pred6
+                                parsePred(lastRow[16])  // predweek
                             ];
                             latestDate = new Date(d);
+                            latestDataIdx = labels.length - 1;
                         } else {
                             leftSpeed.push(null);
                             rightSpeed.push(null);
@@ -791,27 +798,28 @@
 
             // Prepare prediction values
             let predValues = [];
-            if (latestPreds && latestDate) {
-                // Find the index of the latest date in labels (which currently has 30 items)
-                const lastDataIdx = labels.length - 1;
+            if (latestPreds && latestDataIdx !== -1) {
+                // We want to plot 7 predictions starting from latestDataIdx + 1
+                const neededLabelsCount = latestDataIdx + 8;
                 
-                // Add 7 more days for prediction
-                for (let i = 1; i <= 7; i++) {
-                    const d = new Date(latestDate);
-                    d.setDate(latestDate.getDate() + i);
-                    labels.push(`${d.getDate()}/${d.getMonth() + 1}`);
-                    leftSpeed.push(null);
-                    rightSpeed.push(null);
-                    recoveryIndex.push(null);
+                if (neededLabelsCount > labels.length) {
+                    const extraNeeded = neededLabelsCount - labels.length;
+                    for (let i = 1; i <= extraNeeded; i++) {
+                        const d = new Date(malaysiaDate);
+                        d.setDate(malaysiaDate.getDate() + i);
+                        labels.push(`${d.getDate()}/${d.getMonth() + 1}`);
+                        leftSpeed.push(null);
+                        rightSpeed.push(null);
+                        recoveryIndex.push(null);
+                    }
                 }
                 
-                // Initialize predValues with nulls for the new total length
                 predValues = new Array(labels.length).fill(null);
                 
                 // Start prediction line from the last actual data point
-                predValues[lastDataIdx] = recoveryIndex[lastDataIdx];
+                predValues[latestDataIdx] = recoveryIndex[latestDataIdx];
                 for (let i = 0; i < 7; i++) {
-                    predValues[lastDataIdx + 1 + i] = latestPreds[i];
+                    predValues[latestDataIdx + 1 + i] = latestPreds[i];
                 }
             } else {
                 predValues = new Array(labels.length).fill(null);
