@@ -13,6 +13,8 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -656,7 +658,20 @@
 
             <!-- Summary Report Section -->
             <section id="summary-report" class="tab-content">
-                <div class="data-card"><div class="card-header"><i class="fas fa-file-medical-alt"></i><h3>Summary Report</h3></div><div class="card-body"><div class="placeholder-box"><p>Automated session summaries will be displayed here.</p></div></div></div>
+                <div class="data-card">
+                    <div class="card-header">
+                        <i class="fas fa-file-medical-alt"></i>
+                        <h3>Summary Report</h3>
+                        <button class="logout-btn" style="width: auto; margin-left: auto; background: var(--success-color);" onclick="downloadReportPDF()">
+                            <i class="fas fa-file-pdf"></i> Download PDF
+                        </button>
+                    </div>
+                    <div class="card-body" id="report-container">
+                        <div class="placeholder-box">
+                            <p>Generating report based on weekly performance...</p>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- Direct CSV Data Files Section -->
@@ -709,6 +724,377 @@
 
             if (sectionId === 'csv-files') scanRecentCSVFiles();
             if (sectionId === 'data-charts') loadChartData();
+            if (sectionId === 'summary-report') generateSummaryReport();
+        }
+
+        let weeklyReportData = null;
+
+        async function generateSummaryReport() {
+            const container = document.getElementById('report-container');
+            container.innerHTML = '<div class="placeholder-box"><p><i class="fas fa-spinner fa-spin"></i> Compiling weekly data...</p></div>';
+
+            if (!lastSundayDate || !lastSaturdayDate) {
+                container.innerHTML = '<div class="placeholder-box"><p>Unable to determine reporting period.</p></div>';
+                return;
+            }
+
+            const dates = [];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(lastSundayDate);
+                d.setDate(lastSundayDate.getDate() + i);
+                dates.push(d);
+            }
+
+            let totalSessions = 0;
+            let sumDuration = 0;
+            let rowCount = 0;
+            let sumLeftAvg = 0, sumRightAvg = 0, sumLeftPk = 0, sumRightPk = 0;
+            let sumRecIndex = 0, sumRecImprove = 0;
+            let latestMode = 'N/A';
+            let latestPredWeek = 'N/A';
+            let filesFound = 0;
+
+            for (const date of dates) {
+                const yyyy = date.getFullYear();
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const dd = String(date.getDate()).padStart(2, '0');
+                const url = `./DATA/${yyyy}${mm}${dd}_DATA.csv`;
+                try {
+                    const res = await fetch(url);
+                    if (res.ok) {
+                        const csv = await res.text();
+                        const lines = csv.trim().split('\n').filter(l => l.trim() !== '').slice(1);
+                        if (lines.length > 0) {
+                            filesFound++;
+                            totalSessions += lines.length;
+                            lines.forEach(line => {
+                                const cols = line.split(',').map(s => s.trim());
+                                sumDuration += parseFloat(cols[3]) || 0;
+                                sumLeftPk += parseFloat(cols[4]) || 0;
+                                sumRightPk += parseFloat(cols[5]) || 0;
+                                sumLeftAvg += parseFloat(cols[6]) || 0;
+                                sumRightAvg += parseFloat(cols[7]) || 0;
+                                sumRecIndex += parseFloat(cols[8]) || 0;
+                                sumRecImprove += parseFloat(cols[9]) || 0;
+                                rowCount++;
+                                latestMode = cols[1] || latestMode;
+                                latestPredWeek = cols[16] || latestPredWeek;
+                            });
+                        }
+                    }
+                } catch {}
+            }
+
+            if (filesFound === 0) {
+                container.innerHTML = '<div class="placeholder-box"><p>No data found for the reporting period (' + document.getElementById('weeklyDateLabel').innerText + ').</p></div>';
+                return;
+            }
+
+            const avgDuration = sumDuration / rowCount;
+            const avgLeftAvg = sumLeftAvg / rowCount;
+            const avgRightAvg = sumRightAvg / rowCount;
+            const avgLeftPk = sumLeftPk / rowCount;
+            const avgRightPk = sumRightPk / rowCount;
+            const avgRecIndex = sumRecIndex / rowCount;
+            const avgRecImprove = sumRecImprove / filesFound; // Improvement is daily avg
+
+            // Scoring Logic
+            let adherenceScore = 0;
+            let adherenceStatus = "";
+            let adherenceDesc = "";
+            if (totalSessions === 21) {
+                adherenceScore = 2;
+                adherenceStatus = "🟢 Good";
+                adherenceDesc = "The patient demonstrated excellent therapy adherence by completing all scheduled sessions for the week with consistent session duration and engagement.";
+            } else if (totalSessions >= 16) {
+                adherenceScore = 1;
+                adherenceStatus = "🟡 Normal";
+                adherenceDesc = "The patient completed the majority of scheduled rehabilitation sessions this week with acceptable consistency in session duration.";
+            } else {
+                adherenceScore = 0;
+                adherenceStatus = "🔴 Poor";
+                adherenceDesc = "The patient showed reduced therapy adherence this week, with missed or shortened sessions that may affect recovery progression.";
+            }
+
+            let trendScore = avgRecImprove > 0 ? 2 : 0;
+            let trendStatus = avgRecImprove > 0 ? "🟢 Good" : "🔴 Poor";
+            let trendDesc = avgRecImprove > 0 ? 
+                "The patient showed stable recovery progression this week, with modest improvements in the recovery index." : 
+                "Minimal or declining recovery progression was observed this week, suggesting a potential plateau or reduced motor engagement.";
+            let trendLabel = avgRecImprove > 0 ? "Stable Improvement" : "Declining";
+
+            const totalScore = adherenceScore + trendScore;
+            let finalEval = "";
+            let finalStatus = "";
+            let finalDesc = "";
+
+            if (totalScore >= 4) {
+                finalStatus = "🟢 GOOD";
+                finalEval = "GOOD – Overall Weekly Performance";
+                finalDesc = "The patient demonstrated good overall rehabilitation performance during the reporting week. Therapy adherence was consistent, and recovery and performance trends showed measurable improvement. Current therapy settings are appropriate and effective.";
+            } else if (totalScore >= 2) {
+                finalStatus = "🟡 NORMAL";
+                finalEval = "NORMAL – Overall Weekly Performance";
+                finalDesc = "The patient demonstrated acceptable overall rehabilitation performance during the reporting week. While recovery improvement was observed or session adherence was generally adequate, continued monitoring is recommended.";
+            } else {
+                finalStatus = "🔴 NEEDS ATTENTION";
+                finalEval = "NEEDS ATTENTION – Overall Weekly Performance";
+                finalDesc = "The patient demonstrated limited overall rehabilitation progress during the reporting week. Recovery and performance trends did not show improvement and/or therapy adherence was reduced, indicating a potential need for therapy adjustment.";
+            }
+
+            const reportDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            const periodLabel = document.getElementById('weeklyDateLabel').innerText;
+
+            weeklyReportData = {
+                patientId: "CHRGS001",
+                patientName: "Tristan Chew Zun Yan",
+                mode: latestMode.charAt(0).toUpperCase() + latestMode.slice(1),
+                period: periodLabel,
+                generatedOn: reportDate,
+                totalSessions: `${totalSessions}/21`,
+                avgDuration: `${avgDuration.toFixed(1)} minutes`,
+                adherenceStatus,
+                adherenceDesc,
+                metrics: [
+                    { param: "Average Hand Velocity left", value: `${avgLeftAvg.toFixed(1)} cm/s` },
+                    { param: "Average Hand Velocity right", value: `${avgRightAvg.toFixed(1)} cm/s` },
+                    { param: "Peak Hand Velocity left", value: `${avgLeftPk.toFixed(1)} cm/s` },
+                    { param: "Peak Hand Velocity right", value: `${avgRightPk.toFixed(1)} cm/s` }
+                ],
+                recIndex: `${avgRecIndex.toFixed(1)}%`,
+                improvement: `${avgRecImprove >= 0 ? '+' : ''}${avgRecImprove.toFixed(1)}%`,
+                trendLabel,
+                trendStatus,
+                trendDesc,
+                prediction: `${parseFloat(latestPredWeek).toFixed(1)}%`,
+                finalStatus,
+                finalEval,
+                finalDesc
+            };
+
+            container.innerHTML = `
+                <div style="max-width: 800px; margin: 0 auto; background: white; padding: 40px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; line-height: 1.6; color: #1e293b;">
+                    <div style="text-align: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 20px; margin-bottom: 30px;">
+                        <h2 style="color: var(--primary-color); margin-bottom: 5px;">CeroHeal Rehabilitation Glove System</h2>
+                        <h3 style="color: #64748b; font-weight: 600;">Weekly Therapy Summary Report</h3>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 15px; color: var(--primary-color);">Patient & Session Information</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div><strong>Patient ID:</strong> ${weeklyReportData.patientId}</div>
+                            <div><strong>Name:</strong> ${weeklyReportData.patientName}</div>
+                            <div><strong>Current Rehab Mode:</strong> ${weeklyReportData.mode}</div>
+                            <div><strong>Reporting Period:</strong> ${weeklyReportData.period}</div>
+                            <div><strong>Report Generated On:</strong> ${weeklyReportData.generatedOn}</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 15px; color: var(--primary-color);">Weekly Session Summary</h4>
+                        <div style="margin-bottom: 10px;">
+                            <div><strong>Total Sessions Completed:</strong> ${weeklyReportData.totalSessions}</div>
+                            <div><strong>Average Session Duration:</strong> ${weeklyReportData.avgDuration}</div>
+                        </div>
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid ${adherenceStatus.includes('🟢') ? '#16a34a' : adherenceStatus.includes('🟡') ? '#ca8a04' : '#dc2626'};">
+                            <div style="font-weight: 700; margin-bottom: 5px;">${adherenceStatus}</div>
+                            <p style="font-size: 13px; margin: 0;">${adherenceDesc}</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 15px; color: var(--primary-color);">Weekly Key Performance Metrics</h4>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <thead>
+                                <tr style="background: #f1f5f9;">
+                                    <th style="padding: 10px; text-align: left; border: 1px solid #e2e8f0;">Parameter</th>
+                                    <th style="padding: 10px; text-align: left; border: 1px solid #e2e8f0;">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${weeklyReportData.metrics.map(m => `
+                                    <tr>
+                                        <td style="padding: 10px; border: 1px solid #e2e8f0;">${m.param}</td>
+                                        <td style="padding: 10px; border: 1px solid #e2e8f0;">${m.value}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 15px; color: var(--primary-color);">Recovery Progress</h4>
+                        <div style="margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div><strong>Current Recovery Index:</strong> ${weeklyReportData.recIndex}</div>
+                            <div><strong>Weekly Improvement:</strong> ${weeklyReportData.improvement}</div>
+                            <div><strong>Current Progress Trend:</strong> ${weeklyReportData.trendLabel}</div>
+                        </div>
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid ${trendStatus.includes('🟢') ? '#16a34a' : '#dc2626'};">
+                            <div style="font-weight: 700; margin-bottom: 5px;">${trendStatus}</div>
+                            <p style="font-size: 13px; margin: 0;">${trendDesc}</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 30px; background: #eff6ff; padding: 20px; border-radius: 8px; border: 1px solid #dbeafe;">
+                        <h4 style="margin-bottom: 10px; color: #1e40af; font-size: 15px;">AI-Based Recovery Prediction</h4>
+                        <p style="margin: 0;"><strong>Predicted Recovery Index By The End Of Next Week:</strong> <span style="font-size: 18px; color: #1e40af;">${weeklyReportData.prediction}</span></p>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 15px; color: var(--primary-color);">🧾 Final Overall Weekly Therapy Evaluation</h4>
+                        <div style="background: ${finalStatus.includes('🟢') ? '#f0fdf4' : finalStatus.includes('🟡') ? '#fffbeb' : '#fef2f2'}; padding: 20px; border-radius: 8px; border: 1px solid ${finalStatus.includes('🟢') ? '#bbf7d0' : finalStatus.includes('🟡') ? '#fef3c7' : '#fecaca'};">
+                            <div style="font-size: 16px; font-weight: 800; margin-bottom: 10px; color: ${finalStatus.includes('🟢') ? '#166534' : finalStatus.includes('🟡') ? '#92400e' : '#991b1b'};">${finalEval}</div>
+                            <p style="margin: 0; font-size: 14px;">${finalDesc}</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8; text-align: center;">
+                        <p><strong>Disclaimer:</strong> This report is automatically generated by the CeroHeal Rehabilitation Glove System and is intended to assist clinical monitoring. It does not replace professional medical evaluation or judgment.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function downloadReportPDF() {
+            if (!weeklyReportData) {
+                alert("Report data not ready.");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const primaryColor = [10, 54, 157]; // #0a369d
+
+            // Header
+            doc.setFontSize(20);
+            doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+            doc.text("CeroHeal Rehabilitation Glove System", 105, 20, { align: "center" });
+            
+            doc.setFontSize(14);
+            doc.setTextColor(100, 116, 139);
+            doc.text("Weekly Therapy Summary Report", 105, 30, { align: "center" });
+
+            doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+            doc.setLineWidth(0.5);
+            doc.line(20, 35, 190, 35);
+
+            // Patient Info
+            doc.setFontSize(12);
+            doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+            doc.text("Patient & Session Information", 20, 45);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(30, 41, 59);
+            doc.text(`Patient ID: ${weeklyReportData.patientId}`, 20, 55);
+            doc.text(`Name: ${weeklyReportData.patientName}`, 110, 55);
+            doc.text(`Current Rehab Mode: ${weeklyReportData.mode}`, 20, 62);
+            doc.text(`Reporting Period: ${weeklyReportData.period}`, 110, 62);
+            doc.text(`Report Generated On: ${weeklyReportData.generatedOn}`, 20, 69);
+
+            // Session Summary
+            doc.setFontSize(12);
+            doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+            doc.text("Weekly Session Summary", 20, 80);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(30, 41, 59);
+            doc.text(`Total Sessions Completed: ${weeklyReportData.totalSessions}`, 20, 90);
+            doc.text(`Average Session Duration: ${weeklyReportData.avgDuration}`, 20, 97);
+
+            // Adherence Box
+            doc.setFillColor(248, 250, 252);
+            doc.rect(20, 102, 170, 20, 'F');
+            doc.setDrawColor(226, 232, 240);
+            doc.rect(20, 102, 170, 20);
+            
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'bold');
+            doc.text(weeklyReportData.adherenceStatus, 25, 108);
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(9);
+            doc.text(doc.splitTextToSize(weeklyReportData.adherenceDesc, 160), 25, 114);
+
+            // Metrics Table
+            doc.setFontSize(12);
+            doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+            doc.text("Weekly Key Performance Metrics", 20, 132);
+            
+            doc.autoTable({
+                startY: 137,
+                head: [['Parameter', 'Value']],
+                body: weeklyReportData.metrics.map(m => [m.param, m.value]),
+                theme: 'grid',
+                headStyles: { fillColor: [241, 245, 249], textColor: [30, 41, 59], fontStyle: 'bold' },
+                styles: { fontSize: 9 }
+            });
+
+            const nextY = doc.lastAutoTable.finalY + 15;
+
+            // Recovery Progress
+            doc.setFontSize(12);
+            doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+            doc.text("Recovery Progress", 20, nextY);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(30, 41, 59);
+            doc.text(`Current Recovery Index: ${weeklyReportData.recIndex}`, 20, nextY + 10);
+            doc.text(`Weekly Improvement: ${weeklyReportData.improvement}`, 110, nextY + 10);
+            doc.text(`Current Progress Trend: ${weeklyReportData.trendLabel}`, 20, nextY + 17);
+
+            // Trend Box
+            doc.setFillColor(248, 250, 252);
+            doc.rect(20, nextY + 22, 170, 20, 'F');
+            doc.setDrawColor(226, 232, 240);
+            doc.rect(20, nextY + 22, 170, 20);
+            
+            doc.setFont(undefined, 'bold');
+            doc.text(weeklyReportData.trendStatus, 25, nextY + 28);
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(9);
+            doc.text(doc.splitTextToSize(weeklyReportData.trendDesc, 160), 25, nextY + 34);
+
+            // Prediction
+            doc.setFillColor(239, 246, 255);
+            doc.rect(20, nextY + 47, 170, 15, 'F');
+            doc.setDrawColor(219, 234, 254);
+            doc.rect(20, nextY + 47, 170, 15);
+            doc.setFontSize(10);
+            doc.setTextColor(30, 64, 175);
+            doc.text(`AI-Based Recovery Prediction: ${weeklyReportData.prediction}`, 25, nextY + 56);
+
+            // Final Evaluation
+            doc.setFontSize(12);
+            doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+            doc.text("Final Overall Weekly Therapy Evaluation", 20, nextY + 75);
+            
+            const evalBoxColor = weeklyReportData.finalStatus.includes('🟢') ? [240, 253, 244] : 
+                               weeklyReportData.finalStatus.includes('🟡') ? [255, 251, 235] : [254, 242, 242];
+            const evalBorderColor = weeklyReportData.finalStatus.includes('🟢') ? [187, 247, 208] : 
+                                 weeklyReportData.finalStatus.includes('🟡') ? [254, 243, 199] : [254, 202, 202];
+            
+            doc.setFillColor(evalBoxColor[0], evalBoxColor[1], evalBoxColor[2]);
+            doc.rect(20, nextY + 80, 170, 30, 'F');
+            doc.setDrawColor(evalBorderColor[0], evalBorderColor[1], evalBorderColor[2]);
+            doc.rect(20, nextY + 80, 170, 30);
+            
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(weeklyReportData.finalStatus.includes('🟢') ? 22 : weeklyReportData.finalStatus.includes('🟡') ? 146 : 153, 
+                             weeklyReportData.finalStatus.includes('🟢') ? 101 : weeklyReportData.finalStatus.includes('🟡') ? 64 : 27, 
+                             weeklyReportData.finalStatus.includes('🟢') ? 52 : weeklyReportData.finalStatus.includes('🟡') ? 14 : 27);
+            doc.text(weeklyReportData.finalEval, 25, nextY + 88);
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(30, 41, 59);
+            doc.text(doc.splitTextToSize(weeklyReportData.finalDesc, 160), 25, nextY + 95);
+
+            // Footer
+            doc.setFontSize(8);
+            doc.setTextColor(148, 163, 184);
+            doc.text("Disclaimer: This report is automatically generated by the CeroHeal Rehabilitation Glove System and is intended to assist clinical monitoring.", 105, 285, { align: "center" });
+            doc.text("It does not replace professional medical evaluation or judgment.", 105, 290, { align: "center" });
+
+            doc.save(`CeroHeal_Report_${weeklyReportData.period.replace(/ /g, '_')}.pdf`);
         }
 
         let myChart = null;
