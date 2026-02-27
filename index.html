@@ -554,6 +554,9 @@
             <button class="nav-item" onclick="openSection(event, 'data-charts')">
                 <i class="fas fa-chart-line"></i><span>Data Charts</span>
             </button>
+            <button class="nav-item" onclick="openSection(event, 'session-videos')">
+                <i class="fas fa-video"></i><span>Session Videos</span>
+            </button>
             <button class="nav-item" onclick="openSection(event, 'summary-report')">
                 <i class="fas fa-file-medical-alt"></i><span>Summary Report</span>
             </button>
@@ -656,6 +659,22 @@
                 </div>
             </section>
 
+            <!-- Session Videos Section -->
+            <section id="session-videos" class="tab-content">
+                <div class="data-card">
+                    <div class="card-header">
+                        <i class="fas fa-video"></i>
+                        <h3>Session Videos</h3>
+                        <span class="header-date-label" id="videoDateLabel">--</span>
+                    </div>
+                    <div class="card-body">
+                        <div id="video-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                            <div class="placeholder-box"><p>Loading session videos...</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Summary Report Section -->
             <section id="summary-report" class="tab-content">
                 <div class="data-card">
@@ -717,6 +736,7 @@
             const subtitles = {
                 'patient-overview': 'Patient Overview Section',
                 'data-charts': 'Data Charts Section',
+                'session-videos': 'Session Videos Section',
                 'summary-report': 'Summary Report Section',
                 'csv-files': 'Direct CSV Data Files Section'
             };
@@ -725,6 +745,7 @@
             if (sectionId === 'csv-files') scanRecentCSVFiles();
             if (sectionId === 'data-charts') loadChartData();
             if (sectionId === 'summary-report') generateSummaryReport();
+            if (sectionId === 'session-videos') loadSessionVideos();
         }
 
         let weeklyReportData = null;
@@ -1351,6 +1372,63 @@
             lastSundayDate = sun;
             lastSaturdayDate = sat;
             document.getElementById('weeklyDateLabel').innerText = `${formatDate(sun)} - ${formatDate(sat)}`;
+            
+            if (document.getElementById('videoDateLabel')) {
+                document.getElementById('videoDateLabel').innerText = formatDate(yesterday);
+            }
+        }
+
+        async function loadSessionVideos() {
+            const container = document.getElementById('video-container');
+            const dateLabel = document.getElementById('videoDateLabel');
+            
+            if (!globalYesterdayDate) {
+                container.innerHTML = '<div class="placeholder-box"><p>Unable to determine date.</p></div>';
+                return;
+            }
+
+            const formatDate = (date) => `${date.getDate()} ${date.toLocaleString('en-GB', { month: 'short' })} ${date.getFullYear()}`;
+            dateLabel.innerText = formatDate(globalYesterdayDate);
+
+            container.innerHTML = '<div class="placeholder-box"><p><i class="fas fa-spinner fa-spin"></i> Searching for videos...</p></div>';
+
+            const yyyy = globalYesterdayDate.getFullYear();
+            const mm = String(globalYesterdayDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(globalYesterdayDate.getDate()).padStart(2, '0');
+            const dateStr = `${yyyy}${mm}${dd}`;
+
+            let videosFound = 0;
+            let html = '';
+
+            for (let i = 1; i <= 3; i++) {
+                const videoUrl = `./VIDEO/${dateStr}_VIDEO_${i}.mp4`;
+                const exists = await checkFileExists(videoUrl);
+                if (exists) {
+                    videosFound++;
+                    html += `
+                        <div class="data-card" style="margin: 0; border: 1px solid #e2e8f0; box-shadow: none; min-height: auto;">
+                            <div class="card-header" style="background: #f8fafc; padding: 10px 15px; border-bottom: 1px solid #e2e8f0;">
+                                <h4 style="font-size: 14px; color: #1e293b;"><i class="fas fa-play-circle"></i> Session ${i} Video</h4>
+                                <a href="${videoUrl}" download class="logout-btn" style="width: auto; margin-left: auto; padding: 4px 8px; font-size: 12px; background: var(--primary-color); text-decoration: none; display: flex; align-items: center; gap: 5px;">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                            <div class="card-body" style="padding: 10px;">
+                                <video controls style="width: 100%; border-radius: 4px; background: #000; display: block;">
+                                    <source src="${videoUrl}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            if (videosFound === 0) {
+                container.innerHTML = '<div class="placeholder-box" style="grid-column: 1 / -1;"><p><i class="fas fa-video-slash" style="font-size: 24px; margin-bottom: 10px; display: block;"></i> No video available for this date.</p></div>';
+            } else {
+                container.innerHTML = html;
+            }
         }
 
         async function fetchDailyCSV() {
@@ -1509,7 +1587,20 @@
             updateHeaderDates();
             await fetchDailyCSV();
             await fetchWeeklyCSV();
-            setInterval(async () => { updateHeaderDates(); await fetchDailyCSV(); await fetchWeeklyCSV(); }, 60000);
+            setInterval(async () => { 
+                updateHeaderDates(); 
+                await fetchDailyCSV(); 
+                await fetchWeeklyCSV(); 
+                
+                // Refresh data for the currently active section
+                const activeSection = document.querySelector('.tab-content.active');
+                if (activeSection) {
+                    const id = activeSection.id;
+                    if (id === 'session-videos') loadSessionVideos();
+                    // We don't necessarily need to refresh charts/reports every minute 
+                    // unless the user specifically wants real-time updates for those too.
+                }
+            }, 60000);
         });
     </script>
 <script type="module" src="/index.tsx"></script>
