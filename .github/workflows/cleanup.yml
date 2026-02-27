@@ -1,0 +1,32 @@
+name: Repo Cleanup
+
+on:
+  schedule:
+    - cron: '0 16 * * *'   # 12:00 AM Malaysia time (UTC+8)
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Run cleanup script
+        run: python cleanup_repo.py
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git pull --rebase origin main
+
+          git add DATA VIDEO
+          git commit -m "Auto cleanup old DATA and VIDEO files" || echo "No changes"
+
+          git push origin main
