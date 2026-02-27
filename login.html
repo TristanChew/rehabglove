@@ -319,7 +319,7 @@
         </div>
         
         <div class="footer">
-            <p><i class="fas fa-lock"></i> CeroHeal Rehab Glove System &copy; 2023. Authorized access only.</p>
+            <p><i class="fas fa-lock"></i> CeroHeal Rehab Glove System &copy; 2026. Authorized access only.</p>
         </div>
     </div>
 
@@ -341,9 +341,56 @@
             const validUserId = 'CHRGS001';
             const validPassword = '123456';
             
-            // Track login attempts
+            // Track login attempts and lock state
             let loginAttempts = 0;
             const maxAttempts = 3;
+            const lockDuration = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+            function checkLockStatus() {
+                const lockTime = localStorage.getItem('loginLockTime');
+                if (lockTime) {
+                    const currentTime = new Date().getTime();
+                    const timePassed = currentTime - parseInt(lockTime);
+                    
+                    if (timePassed < lockDuration) {
+                        const remainingMinutes = Math.ceil((lockDuration - timePassed) / 60000);
+                        lockSystem(remainingMinutes);
+                        return true;
+                    } else {
+                        unlockSystem();
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            function lockSystem(minutes) {
+                userIdInput.disabled = true;
+                passwordInput.disabled = true;
+                loginButton.disabled = true;
+                loginButton.innerHTML = '<i class="fas fa-ban"></i> Access Locked';
+                loginButton.style.background = '#cccccc';
+                
+                errorMessage.style.display = 'block';
+                errorMessage.innerHTML = `<i class="fas fa-ban"></i> Maximum login attempts exceeded. System locked for ${minutes} minute${minutes > 1 ? 's' : ''}.`;
+                
+                // Refresh lock status every minute
+                setTimeout(checkLockStatus, 60000);
+            }
+
+            function unlockSystem() {
+                localStorage.removeItem('loginLockTime');
+                loginAttempts = 0;
+                userIdInput.disabled = false;
+                passwordInput.disabled = false;
+                loginButton.disabled = false;
+                loginButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access System';
+                loginButton.style.background = 'linear-gradient(to right, #0a369d, #4472ca)';
+                errorMessage.style.display = 'none';
+            }
+
+            // Initial check
+            checkLockStatus();
             
             // Toggle password visibility
             togglePassword.addEventListener('click', function() {
@@ -380,6 +427,9 @@
                         sessionStorage.setItem('isLoggedIn', 'true');
                     }
                     
+                    // Clear lock if any
+                    localStorage.removeItem('loginLockTime');
+                    
                     // Clear inputs
                     userIdInput.value = '';
                     passwordInput.value = '';
@@ -415,16 +465,11 @@
                     
                     // Disable form after max attempts
                     if (loginAttempts >= maxAttempts) {
-                        userIdInput.disabled = true;
-                        passwordInput.disabled = true;
-                        loginButton.disabled = true;
-                        loginButton.innerHTML = '<i class="fas fa-ban"></i> Access Locked';
-                        loginButton.style.background = '#cccccc';
-                        
-                        errorMessage.innerHTML = '<i class="fas fa-ban"></i> Maximum login attempts exceeded. System locked.';
+                        localStorage.setItem('loginLockTime', new Date().getTime().toString());
+                        lockSystem(5);
                         
                         setTimeout(() => {
-                            alert('SYSTEM LOCKED\n\nMaximum login attempts exceeded. Please contact system administrator.');
+                            alert('SYSTEM LOCKED\n\nMaximum login attempts exceeded. System locked for 5 minutes.');
                         }, 300);
                     }
                 }
